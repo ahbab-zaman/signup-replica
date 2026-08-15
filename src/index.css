@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Poppins", sans-serif;
+
+  --color-background: #000000;
+  --color-surface: #151515;
+  --color-surface-secondary: rgba(255, 255, 255, 0.04);
+  --color-surface-tertiary: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.06);
+
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-light: rgba(255, 255, 255, 0.2);
+  --color-border-muted: rgba(255, 255, 255, 0.05);
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e5e7eb;
+  --color-text-muted: rgba(255, 255, 255, 0.5);
+  --color-text-subtle: rgba(255, 255, 255, 0.45);
+  --color-text-faint: rgba(255, 255, 255, 0.4);
+  --color-text-dim: rgba(255, 255, 255, 0.3);
+
+  --color-icon-strong: rgba(255, 255, 255, 0.7);
+  --color-icon-muted: rgba(255, 255, 255, 0.3);
+
+  --color-accent: #5724ff;
+  --color-accent-dark: #4318e0;
+  --color-accent-light: #a78bfa;
+  --color-accent-lightest: #dfdff0;
+  --color-accent-tint: #f5f3ff;
+  --color-accent-foreground: #ffffff;
+
+  --color-highlight: #fbbf24;
+  --color-highlight-foreground: #151515;
+
+  --color-success: #22c55e;
+  --color-success-light: rgba(34, 197, 94, 0.15);
+  --color-success-foreground: #d7f2e8;
+
+  --color-error: #ef4444;
+  --color-error-light: rgba(239, 68, 68, 0.15);
+  --color-error-foreground: #ffe0e0;
+
+  --color-warning: #fbbf24;
+  --color-warning-light: rgba(251, 191, 36, 0.15);
+
+  --color-info: #4a84ff;
+  --color-info-light: rgba(74, 132, 255, 0.15);
+
+  --color-overlay: rgba(0, 0, 0, 0.7);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  --shadow-card: 0px 10px 30px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0px 14px 40px rgba(0, 0, 0, 0.5);
+  --shadow-popover: 0px 18px 50px rgba(0, 0, 0, 0.6);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    text-rendering: optimizeLegibility;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 40%, transparent);
+    color: var(--color-text-primary);
+  }
+}

@@ -98,7 +98,7 @@ Not heavily applicable to this scope (no data lists), but the mock dashboard (`/
 # Toast Notifications
 - Use only for: OTP resend confirmation, global submission failure, generic success confirmations
 - Never for validation errors requiring immediate field-level correction — those stay inline
-- Demo OTP code display (dev/testing convenience — clearly labeled, dismissible, tap-to-copy)
+
 ---
 
 # Modal Rules (landing signup confirm modal)
