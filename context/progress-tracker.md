@@ -8,12 +8,12 @@
 
 ## 📊 Overall Progress
 
-**Completed:** `2 / 14` milestones
+**Completed:** `3 / 14` milestones
 **In Progress:** `0`
 **Blocked:** `0`
-**Progress:** `14%`
+**Progress:** `21%`
 
-`██░░░░░░░░░░░░░░░░░░` **14%**
+`███░░░░░░░░░░░░░░░░░` **21%**
 
 ### Status Legend
 
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | 01 | **Project Setup** | 🟢 Complete | Vite + TS + Tailwind v4 + Router scaffold, UI primitives |
 | 02 | **Wizard Foundation** | 🟢 Complete | Context, reducer, Zod schemas, mock-api |
-| 03 | **Step 0 — Email** | ⬜ Not Started | |
+| 03 | **Step 0 — Email** | 🟢 Complete | RHF + Zod, sendOtp + demo OTP toast, failure toast, newsletter opt-in |
 | 04 | **Step 0.5 — OTP** | ⬜ Not Started | Improved UX vs. source app (target requirement) |
 | 05 | **Step 1 — Username** | ⬜ Not Started | |
 | 06 | **Step 2 — Name** | ⬜ Not Started | |
@@ -52,7 +52,7 @@
 
 > Update this section whenever you start working on a new milestone.
 
-**Current Milestone:** `03 — Step 0 — Email`
+**Current Milestone:** `04 — Step 0.5 — OTP`
 
 **Status:** ⬜ Not Started
 
@@ -72,10 +72,11 @@
 - [x] Mock API created
 - [x] Step navigation implemented
 - [x] Back navigation preserves state
+- [x] Email step implemented (RHF + Zod, sendOtp, loading, toasts, newsletter, focus)
 
 ### Next
 
-> Define the next concrete implementation task here.
+> Build Step 0.5 — OTP: 6-digit segmented input, resend cooldown, verify with loading/inline error, back navigation.
 
 ---
 
@@ -107,12 +108,12 @@
 
 ## 03 — Step 0 — Email
 
-- [ ] Email input implemented
-- [ ] Email validation implemented
-- [ ] Invalid email state handled
-- [ ] Loading state handled
-- [ ] Continue action implemented
-- [ ] Transition to OTP verified
+- [x] Email input implemented
+- [x] Email validation implemented
+- [x] Invalid email state handled
+- [x] Loading state handled
+- [x] Continue action implemented
+- [x] Transition to OTP verified
 
 ---
 
@@ -268,6 +269,7 @@
 | — | Wizard uses one route with internal step state, not per-step routes | Enables smooth Framer Motion transitions and guarantees no data loss on Back |
 | — | 18+ age validation added as explicit improvement | Called out in the assessment brief as a known gap in the reference app |
 | — | OTP screen redesigned (digit-box states, visible resend cooldown) | Called out in the assessment brief as a known UX weakness in the reference app |
+| — | `@hookform/resolvers` upgraded 3.10 → 5.x | zod v4 renamed `ZodError.errors` → `issues`; resolver 3.x rejected on any invalid value (unhandled promise), breaking RHF validation. v5 supports zod v4 |
 
 ---
 
@@ -302,6 +304,12 @@
 - [x] Completed
 - **Completed on:** 2026-08-16
 - **Notes:** `WizardProvider` + reducer (step index, direction, field state, otpVerified, status) with `useWizard` hook. Zod schemas for all 7 steps + composed `signupSchema` master. `lib/mock-api.ts` with `sendOtp`/`verifyOtp`/`checkUsernameAvailable`/`submitSignup`, 600–1400ms latency, failure injection, plus `MockApiError` (`NETWORK_ERROR`/`INVALID_OTP`/`OTP_EXPIRED`). Wizard shell with `AnimatePresence` direction-aware transitions + segmented progress bar; 7 placeholder step components; `SignupPage` mounts provider. Unit tests: validators, reducer, mock-api error paths (25 passing). Typecheck, lint, build all passing.
+
+### Milestone 03 — Step 0: Email
+
+- [x] Completed
+- **Completed on:** 2026-08-16
+- **Notes:** `EmailStep` built with React Hook Form + `zodResolver` (mode `onTouched` for real-time validation): email input with icon + inline error, optional newsletter checkbox, heading auto-focus on mount, Back hidden on first step. Continue persists fields via `SAVE_FIELD`, calls `sendOtp()` with spinner/disabled state, shows "Demo OTP: XXXXXX" info toast on success then advances to OTP, or an error toast on failure with data preserved. Discovered and fixed zod v4 incompatibility in `@hookform/resolvers` 3.x (upgraded to 5.9). EmailStep tests added (render, inline validation, happy path, failure path). 29 tests passing; lint, typecheck, build all passing.
 
 ---
 
@@ -350,6 +358,7 @@ Use this before changing a milestone to `🟢 Complete`.
 | 2026-08-16 | Project Tracker | 🟢 Complete | Progress tracker created |
 | 2026-08-16 | 01 — Project Setup | 🟢 Complete | Scaffold, Tailwind v4, Router, UI primitives; lint/typecheck/build passing |
 | 2026-08-16 | 02 — Wizard Foundation | 🟢 Complete | Wizard context/reducer, Zod schemas, mock-api, shell with transitions + progress; 25 tests passing |
+| 2026-08-16 | 03 — Step 0 — Email | 🟢 Complete | EmailStep (RHF + Zod) with sendOtp + demo OTP toast + failure handling; resolver upgraded for zod v4; 29 tests passing |
 
 ---
 
