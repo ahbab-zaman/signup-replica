@@ -8,12 +8,12 @@
 
 ## 📊 Overall Progress
 
-**Completed:** `1 / 14` milestones
+**Completed:** `2 / 14` milestones
 **In Progress:** `0`
 **Blocked:** `0`
-**Progress:** `7%`
+**Progress:** `14%`
 
-`█░░░░░░░░░░░░░░░░░░░` **7%**
+`██░░░░░░░░░░░░░░░░░░` **14%**
 
 ### Status Legend
 
@@ -31,7 +31,7 @@
 | # | Milestone | Status | Notes |
 |---|---|---|---|
 | 01 | **Project Setup** | 🟢 Complete | Vite + TS + Tailwind v4 + Router scaffold, UI primitives |
-| 02 | **Wizard Foundation** | ⬜ Not Started | Context, reducer, Zod schemas, mock-api |
+| 02 | **Wizard Foundation** | 🟢 Complete | Context, reducer, Zod schemas, mock-api |
 | 03 | **Step 0 — Email** | ⬜ Not Started | |
 | 04 | **Step 0.5 — OTP** | ⬜ Not Started | Improved UX vs. source app (target requirement) |
 | 05 | **Step 1 — Username** | ⬜ Not Started | |
@@ -52,7 +52,7 @@
 
 > Update this section whenever you start working on a new milestone.
 
-**Current Milestone:** `02 — Wizard Foundation`
+**Current Milestone:** `03 — Step 0 — Email`
 
 **Status:** ⬜ Not Started
 
@@ -65,6 +65,13 @@
 - [x] Establish project structure
 - [x] Verify development server
 - [x] Verify production build
+- [x] Wizard context created
+- [x] Reducer implemented
+- [x] Wizard state defined
+- [x] Zod schemas created
+- [x] Mock API created
+- [x] Step navigation implemented
+- [x] Back navigation preserves state
 
 ### Next
 
@@ -88,13 +95,13 @@
 
 ## 02 — Wizard Foundation
 
-- [ ] Wizard context created
-- [ ] Reducer implemented
-- [ ] Wizard state defined
-- [ ] Zod schemas created
-- [ ] Mock API created
-- [ ] Step navigation implemented
-- [ ] Back navigation preserves state
+- [x] Wizard context created
+- [x] Reducer implemented
+- [x] Wizard state defined
+- [x] Zod schemas created
+- [x] Mock API created
+- [x] Step navigation implemented
+- [x] Back navigation preserves state
 
 ---
 
@@ -290,6 +297,12 @@
 - **Completed on:** 2026-08-16
 - **Notes:** Vite + React 18 + TS scaffold, Tailwind v4 via `@theme` tokens in `src/index.css`, React Router v6 routes (`/`, `/signup`, `/terms`, `/success`, `/home`, `*`), ESLint + Prettier + strict tsconfig, UI primitives (Button, Input, Checkbox, Spinner, Skeleton, Toast, Modal). Dev server, production build, typecheck, and lint all verified passing. Toast context/hook split into `toast-context.ts` + `useToast.ts` to satisfy fast-refresh lint rule.
 
+### Milestone 02 — Wizard Foundation
+
+- [x] Completed
+- **Completed on:** 2026-08-16
+- **Notes:** `WizardProvider` + reducer (step index, direction, field state, otpVerified, status) with `useWizard` hook. Zod schemas for all 7 steps + composed `signupSchema` master. `lib/mock-api.ts` with `sendOtp`/`verifyOtp`/`checkUsernameAvailable`/`submitSignup`, 600–1400ms latency, failure injection, plus `MockApiError` (`NETWORK_ERROR`/`INVALID_OTP`/`OTP_EXPIRED`). Wizard shell with `AnimatePresence` direction-aware transitions + segmented progress bar; 7 placeholder step components; `SignupPage` mounts provider. Unit tests: validators, reducer, mock-api error paths (25 passing). Typecheck, lint, build all passing.
+
 ---
 
 # 🧪 Verification Checklist
@@ -336,6 +349,7 @@ Use this before changing a milestone to `🟢 Complete`.
 |---|---|---|---|
 | 2026-08-16 | Project Tracker | 🟢 Complete | Progress tracker created |
 | 2026-08-16 | 01 — Project Setup | 🟢 Complete | Scaffold, Tailwind v4, Router, UI primitives; lint/typecheck/build passing |
+| 2026-08-16 | 02 — Wizard Foundation | 🟢 Complete | Wizard context/reducer, Zod schemas, mock-api, shell with transitions + progress; 25 tests passing |
 
 ---
 

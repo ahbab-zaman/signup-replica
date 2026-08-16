@@ -64,8 +64,8 @@ const router = createBrowserRouter([
 function RouteFallback() {
   return (
     <div className="min-h-screen bg-background px-4 py-6 text-text-primary md:px-6 lg:px-8">
-      <div className="mx-auto flex min-h-[40vh] max-w-screen-xl items-center justify-center">
-        <Skeleton className="h-64 w-full max-w-[30rem] rounded-xl" />
+      <div className="mx-auto flex min-h-[40vh]  max-w-7xl items-center justify-center">
+        <Skeleton className="h-64 w-full max-w-120 rounded-xl" />
       </div>
     </div>
   );
