@@ -1,7 +1,28 @@
+import { MotionConfig } from "framer-motion";
+import { AboutSection } from "@/components/home/AboutSection";
+import { ContactSection } from "@/components/home/ContactSection";
+import { DownloadSection } from "@/components/home/DownloadSection";
+import { EventsMarquee } from "@/components/home/EventsMarquee";
+import { FeatureBento } from "@/components/home/FeatureBento";
+import { HeroSection } from "@/components/home/HeroSection";
+import { HomeNavbar } from "@/components/home/HomeNavbar";
+import { SiteFooter } from "@/components/home/SiteFooter";
+import { StorySection } from "@/components/home/StorySection";
+
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 text-text-primary">
-      <p className="text-text-muted">Mock dashboard coming soon.</p>
-    </main>
+    <MotionConfig reducedMotion="user">
+      <main className="min-h-screen bg-background text-text-primary">
+        <HomeNavbar />
+        <HeroSection />
+        <EventsMarquee />
+        <DownloadSection />
+        <AboutSection />
+        <FeatureBento />
+        <StorySection />
+        <ContactSection />
+        <SiteFooter />
+      </main>
+    </MotionConfig>
   );
 }

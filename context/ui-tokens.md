@@ -66,6 +66,25 @@ All tokens are defined in `src/index.css` via Tailwind v4's `@theme` directive. 
 
   --color-overlay: rgba(0, 0, 0, 0.7);
 
+  /* Gradient stops — compose with `bg-linear-to-*` + `from/via/to` utilities */
+  --color-grad-hero-1: #a78bfa; /* violet (hero "Perfect!" gradient) */
+  --color-grad-hero-2: #f472b6; /* pink */
+  --color-grad-hero-3: #fbbf24; /* amber */
+  --color-grad-dl-1: #9333ea; /* purple (download section bg) */
+  --color-grad-dl-2: #ec4899; /* pink */
+  --color-grad-dl-3: #dc2626; /* red */
+
+  /* Bento / landing extras */
+  --color-bento-violet: #ddd6fe; /* CTA bento card bg (violet-300 eq.) */
+
+  /* Profile banner palette */
+  --color-profile-banner-start: #8ad9cc;
+  --color-profile-banner-end: #5aa89b;
+  --color-banner-glyph: #12100e;
+
+  /* Typography */
+  --font-size-banner-glyph: clamp(9rem, 32vw, 15rem);
+
   /* Radius */
   --radius-sm: 4px;
   --radius-md: 8px;

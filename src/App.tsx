@@ -8,6 +8,7 @@ const SignupPage = lazy(() => import("@/pages/SignupPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const SuccessPage = lazy(() => import("@/pages/SuccessPage"));
 const HomePage = lazy(() => import("@/pages/HomePage"));
+const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 
 const router = createBrowserRouter([
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
     element: (
       <Suspense fallback={<RouteFallback />}>
         <HomePage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <Suspense fallback={<RouteFallback />}>
+        <ProfilePage />
       </Suspense>
     ),
   },

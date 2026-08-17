@@ -8,12 +8,12 @@
 
 ## 📊 Overall Progress
 
-**Completed:** `10 / 14` milestones
+**Completed:** `11 / 14` milestones
 **In Progress:** `0`
 **Blocked:** `0`
-**Progress:** `71%`
+**Progress:** `79%`
 
-`██████████████░░░░░░` **71%**
+`███████████████░░░░░` **79%**
 
 ### Status Legend
 
@@ -40,7 +40,7 @@
 | 08 | **Step 4 — Pronouns** | 🟢 Complete | Custom combobox dropdown, auto-fill on select, custom input allowed |
 | 09 | **Step 5 — Review & Submit** | 🟢 Complete | T&C acceptance only, no data recap, submit with loading/error toast/retry |
 | 10 | **Success & Redirect** | 🟢 Complete | Animated confirmation screen, personalizes username, auto-redirect to /home after 3s + manual button |
-| 11 | **Landing Page** | ⬜ Not Started | Three.js hero, signup confirm modal |
+| 11 | **Landing Page & Profile** | 🟢 Complete | 9-section `/home` (Three.js hero, marquee, bento, story) + `/profile` banner page |
 | 12 | **Terms & Conditions Page** | ⬜ Not Started | |
 | 13 | **Polish & Responsiveness Pass** | ⬜ Not Started | |
 
@@ -52,7 +52,7 @@
 
 > Update this section whenever you start working on a new milestone.
 
-**Current Milestone:** `11 — Landing Page`
+**Current Milestone:** `12 — Terms & Conditions Page`
 
 **Status:** ⬜ Not Started
 
@@ -80,10 +80,12 @@
 - [x] Pronouns step implemented (custom combobox, auto-fill on select, custom input)
 - [x] Review step implemented (T&C block + full-terms link, acceptance checkbox, submit with loading/error toast/retry, navigates to /success)
 - [x] Success & redirect implemented (animated confirmation, username greeting, auto-redirect to /home + manual button)
+- [x] `/home` landing page implemented (9 sections: fixed navbar w/ equalizer, Three.js hero, events marquee, download, about scroll-reveal, feature bento w/ spotlight badge, story w/ goo-filter blend, contact CTA, footer)
+- [x] `/profile` page implemented (teal banner w/ initials-glyph hero art, identity block, stats, bio, actions)
 
 ### Next
 
-> Build the Landing Page (and profile page) following `context/home-page.md` and `context/profile-page.md`.
+> Build the Terms & Conditions page (Milestone 12) — standalone `/terms` route styled consistently with the wizard.
 
 ---
 
@@ -203,8 +205,22 @@
 
 ## 11 — Landing Page and profile page
 
- - follow the context\home-page.md file to design it
-  - follow the context\profile-page.md to design the page
+- [x] `/home` route built with 9 sections (navbar, hero, marquee, download, about, bento, story, contact, footer)
+- [x] Three.js hero (lazy-loaded, particles + mouse parallax, reduced-motion static)
+- [x] Infinite events marquee (seamless loop, pause on hover, reduced-motion static)
+- [x] Word-by-word animated titles (download, about, story, contact)
+- [x] Scroll-linked about image reveal (useScroll → scale/borderRadius)
+- [x] Feature bento grid (spotlight cursor-follow badge, hover scale)
+- [x] Story section (mix-blend-difference title over goo-filtered panel)
+- [x] Sliding-text CTA buttons
+- [x] Floating pill navbar + mobile menu + equalizer icon
+- [x] `/profile` route: ProfileBanner (teal gradient, initials-glyph art, identity block, edit action, pager dot)
+- [x] Profile stats / bio / actions body (mocked data)
+- [x] Responsive layout verified at 375 / 768 / 1440
+- [x] Tests: HomePage + ProfilePage render suites (77 passing)
+- [x] Typecheck, lint, production build all passing
+
+**Simplifications (no source assets available):** bento "video" cards and marquee event thumbnails use token-gradients + lucide icons instead of real video/photo assets; the about image reveal uses a gradient panel; the story masked image uses an SVG goo filter over a gradient panel. Navbar equalizer toggles a visual-only state (no audio track asset). Banner carousel deferred — single static pager dot.
 
 ---
 
@@ -354,6 +370,12 @@
 - **Completed on:** 2026-08-18
 - **Notes:** `SuccessPage` is a Framer Motion confirmation screen (spring check-circle animation, fade-up content, wrapped in `MotionConfig reducedMotion="user"`). Greets the user by username passed via router state from `ReviewStep` (`navigate("/success", { state: { username } })`). Auto-redirects to `/home` (replace) after `SUCCESS_REDIRECT_MS` (3s) with a visible live countdown ("Redirecting in 3s…", `aria-live="polite"`); a "Go to dashboard" button redirects immediately (also covers reduced-motion/no-JS-timer users). Timer effect cleans up on unmount so refresh is safe. SuccessPage tests added (4: render+username, auto-redirect via fake timers, countdown decrement, button redirect). 68 tests passing; lint, typecheck, build all passing.
 
+### Milestone 11 — Landing Page & Profile
+
+- [x] Completed
+- **Completed on:** 2026-08-18
+- **Notes:** Built `/home` (9 sections in `src/components/home/`) + `/profile` (`src/components/profile/`). Added `three@0.169` + `@react-three/fiber@8.18` (React 18-compatible), lazy-loaded `HeroCanvas` chunk (only on this route). New tokens: gradient stops (`--color-grad-hero-*`, `--color-grad-dl-*`), `--color-bento-violet`, profile banner palette, `--font-size-banner-glyph`. Motion via Framer Motion only — marquee uses `useAnimationFrame`+`useMotionValue` (seamless loop, true hover-pause), word reveals via `whileInView` stagger, scroll-linked reveal via `useScroll`/`useTransform`, sliding-text CTAs via Tailwind group-hover transforms, cursor-follow glow via CSS-vars radial gradient. `prefers-reduced-motion` handled via `MotionConfig reducedMotion="user"` + `useReducedMotion` in marquee/equalizer/hero. Deliberate simplifications (no real video/photo assets): gradient+icon event thumbs, gradient bento/video panels, goo-filter over gradient for story image, visual-only equalizer toggle, static pager dot. Added vitest global jsdom setup (`src/test/setup.ts` mocks IntersectionObserver + matchMedia). 77 tests passing; typecheck, lint, build all passing.
+
 ---
 
 # 🧪 Verification Checklist
@@ -409,6 +431,7 @@ Use this before changing a milestone to `🟢 Complete`.
 | 2026-08-18 | 08 — Step 4 — Pronouns | 🟢 Complete | PronounsStep (custom combobox dropdown, auto-fill, custom input); 59 tests passing |
 | 2026-08-18 | 09 — Step 5 — Review & Submit | 🟢 Complete | ReviewStep (T&C + acceptance checkbox, submitSignup with loading/error toast/retry, navigates to /success); 64 tests passing |
 | 2026-08-18 | 10 — Success & Redirect | 🟢 Complete | SuccessPage (Framer Motion confirmation, username greeting, 3s auto-redirect to /home + manual button); 68 tests passing |
+| 2026-08-18 | 11 — Landing Page & Profile | 🟢 Complete | 9-section /home (Three.js lazy hero, events marquee, download, about reveal, bento, story, contact, footer) + /profile banner page; three/fiber added; 77 tests passing |
 
 ---
 
