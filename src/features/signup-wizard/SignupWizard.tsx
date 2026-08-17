@@ -1,14 +1,17 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { cn } from "@/lib/utils";
 import { AgeStep } from "./components/AgeStep";
+import { WizardChrome } from "./components/WizardChrome";
 import { EmailStep } from "./components/EmailStep";
 import { NameStep } from "./components/NameStep";
 import { OtpStep } from "./components/OtpStep";
 import { PronounsStep } from "./components/PronounsStep";
 import { ReviewStep } from "./components/ReviewStep";
 import { UsernameStep } from "./components/UsernameStep";
-import { TOTAL_STEPS } from "./context/wizardReducer";
 import { useWizard } from "./hooks/useWizard";
+import {
+  wizardContentClass,
+  wizardStepClass,
+} from "./components/wizardStyles";
 
 const STEP_COMPONENTS = [
   EmailStep,
@@ -40,10 +43,8 @@ export function SignupWizard() {
   const variants = reduceMotion ? reducedStepVariants : stepVariants;
 
   return (
-    <div className="w-full max-w-[30rem] rounded-xl border border-border bg-surface p-6 shadow-card sm:p-8">
-      <StepProgress current={state.stepIndex} />
-
-      <div className="mt-8">
+    <WizardChrome>
+      <div className={wizardContentClass}>
         <AnimatePresence mode="wait" custom={state.direction} initial={false}>
           <motion.div
             key={state.stepIndex}
@@ -54,33 +55,12 @@ export function SignupWizard() {
             exit="exit"
             transition={{ duration: 0.22, ease: "easeOut" }}
           >
-            <StepComponent />
+            <div className={wizardStepClass}>
+              <StepComponent />
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
-    </div>
-  );
-}
-
-function StepProgress({ current }: { current: number }) {
-  return (
-    <div
-      role="progressbar"
-      aria-valuemin={0}
-      aria-valuemax={TOTAL_STEPS - 1}
-      aria-valuenow={current}
-      aria-label="Signup progress"
-      className="flex items-center gap-1.5"
-    >
-      {Array.from({ length: TOTAL_STEPS }, (_, index) => (
-        <span
-          key={index}
-          className={cn(
-            "h-1.5 flex-1 rounded-full transition-colors duration-200",
-            index <= current ? "bg-accent" : "bg-surface-secondary",
-          )}
-        />
-      ))}
-    </div>
+    </WizardChrome>
   );
 }

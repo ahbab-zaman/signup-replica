@@ -1,14 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "lucide-react";
 import { useEffect, useRef, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { NAME_MAX_LENGTH } from "@/lib/constants";
 import { useWizard } from "../hooks/useWizard";
 import { nameSchema, type NameFields } from "../validators/name.schema";
 import { StepFooter } from "./StepFooter";
+import {
+  wizardCopyClass,
+  wizardFieldClass,
+  wizardLabelClass,
+  wizardPrimaryButtonClass,
+  wizardStepClass,
+  wizardTitleClass,
+} from "./wizardStyles";
+import { NAME_MAX_LENGTH } from "@/lib/constants";
 
 export function NameStep() {
   const { state, dispatch } = useWizard();
@@ -42,41 +47,53 @@ export function NameStep() {
   };
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className={wizardStepClass}>
       <div>
         <h2
           ref={headingRef}
           tabIndex={-1}
-          className="text-2xl font-bold text-text-primary focus:outline-none"
+          className={wizardTitleClass + " focus:outline-none"}
         >
-          What should we call you?
+          &quot;Name, please, for the party check!&quot;
         </h2>
-        <p className="mt-2 text-sm text-text-muted">
-          Your name as it should appear on your profile.
+        <p className={wizardCopyClass}>
+          This is the name shown as on members and requests. Cannot be changed later.
         </p>
       </div>
 
-      <form noValidate onSubmit={onSubmit} className="flex flex-col gap-5">
-        <Input
-          label="Name"
-          autoComplete="name"
-          placeholder="Ada Lovelace"
-          maxLength={NAME_MAX_LENGTH}
-          leftIcon={<User aria-hidden="true" className="h-4 w-4" />}
-          error={errors.name?.message}
-          {...register("name")}
-        />
+      <form noValidate onSubmit={onSubmit} className="mt-4 flex flex-col gap-6">
+        <div>
+          <label htmlFor="name" className={wizardLabelClass}>
+            Name
+          </label>
+          <input
+            id="name"
+            autoComplete="name"
+            placeholder=""
+            maxLength={NAME_MAX_LENGTH}
+            aria-invalid={errors.name ? true : undefined}
+            aria-describedby={errors.name ? "name-error" : undefined}
+            className={wizardFieldClass}
+            {...register("name")}
+          />
+          {errors.name ? (
+            <p id="name-error" role="alert" className="mt-2 text-sm text-white/55">
+              {errors.name.message}
+            </p>
+          ) : null}
+        </div>
 
         <StepFooter
           onBack={() => dispatch({ type: "PREV_STEP" })}
           primary={
-            <Button
+            <button
               type="submit"
+              aria-label="Continue"
               disabled={!isValid}
-              className="w-full sm:w-auto"
+              className={wizardPrimaryButtonClass}
             >
-              Continue
-            </Button>
+              NEXT
+            </button>
           }
         />
       </form>

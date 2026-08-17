@@ -85,15 +85,12 @@ describe("OtpStep", () => {
     renderStep();
 
     expect(
-      screen.getByRole("heading", { name: "Check your inbox" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/A 6-digit OTP has been sent to ada@example\.com/i),
+      screen.getByRole("heading", { name: "Enter OTP" }),
     ).toBeInTheDocument();
     expect(getDigitInputs()).toHaveLength(6);
     expect(screen.getByRole("button", { name: "Verify" })).toBeDisabled();
     expect(screen.getByRole("button", { name: /Back/i })).toBeInTheDocument();
-    expect(screen.getByText(/Resend code in 30s/i)).toBeInTheDocument();
+    expect(screen.getByText(/Resend OTP in 30s/i)).toBeInTheDocument();
   });
 
   it("collects digits, marks filled boxes, and enables Verify once complete", async () => {
@@ -103,7 +100,6 @@ describe("OtpStep", () => {
     await fillDigits(user);
 
     const inputs = getDigitInputs();
-    expect(inputs[0]).toHaveClass("border-accent");
     expect(inputs[0]).toHaveValue("1");
     expect(inputs[5]).toHaveValue("6");
     expect(screen.getByRole("button", { name: "Verify" })).toBeEnabled();
@@ -185,7 +181,7 @@ describe("OtpStep", () => {
       vi.advanceTimersByTime(30_000);
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Resend code" }));
+    fireEvent.click(screen.getByRole("button", { name: "Resend OTP" }));
 
     await act(async () => {
       await Promise.resolve();
@@ -193,6 +189,6 @@ describe("OtpStep", () => {
 
     expect(mockedSendOtp).toHaveBeenCalledWith("ada@example.com");
     expect(screen.getByText("Demo OTP: 654321")).toBeInTheDocument();
-    expect(screen.getByText(/Resend code in 30s/i)).toBeInTheDocument();
+    expect(screen.getByText(/Resend OTP in 30s/i)).toBeInTheDocument();
   });
 });

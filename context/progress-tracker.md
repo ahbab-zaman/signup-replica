@@ -376,6 +376,15 @@
 - **Completed on:** 2026-08-18
 - **Notes:** Built `/home` (9 sections in `src/components/home/`) + `/profile` (`src/components/profile/`). Added `three@0.169` + `@react-three/fiber@8.18` (React 18-compatible), lazy-loaded `HeroCanvas` chunk (only on this route). New tokens: gradient stops (`--color-grad-hero-*`, `--color-grad-dl-*`), `--color-bento-violet`, profile banner palette, `--font-size-banner-glyph`. Motion via Framer Motion only — marquee uses `useAnimationFrame`+`useMotionValue` (seamless loop, true hover-pause), word reveals via `whileInView` stagger, scroll-linked reveal via `useScroll`/`useTransform`, sliding-text CTAs via Tailwind group-hover transforms, cursor-follow glow via CSS-vars radial gradient. `prefers-reduced-motion` handled via `MotionConfig reducedMotion="user"` + `useReducedMotion` in marquee/equalizer/hero. Deliberate simplifications (no real video/photo assets): gradient+icon event thumbs, gradient bento/video panels, goo-filter over gradient for story image, visual-only equalizer toggle, static pager dot. Added vitest global jsdom setup (`src/test/setup.ts` mocks IntersectionObserver + matchMedia). 77 tests passing; typecheck, lint, build all passing.
 
+**Enhancement pass (same day):**
+- **User dropdown + logout:** added `src/lib/session.ts` (localStorage session) + `src/hooks/useSessionUser.ts`. Signup success (`SuccessPage`, via `ReviewStep` state) creates the session; navbar `UserMenu` shows avatar initials, name/@username, links to `/profile` and `/home`, and a working **Log out** that clears the session and navigates to `/signup`. No session → "Sign in" pill. Closes on outside click / Escape.
+- **Profile → Home toggle:** "Go to home" button added to the profile banner top-left (`navigate("/home")`).
+- **Animated profile banner:** new `ProfileBannerBackground` — slow-drifting blurred light blobs + a diagonal light sheen sweeping across the teal gradient (`useReducedMotion` → static).
+- **Home scroll animations:** `ScrollProgress` gradient progress bar (useScroll + useSpring), `Reveal` whileInView fade-rise applied across marquee/download/about/bento/contact, staggered bento card reveals, and scroll parallax on the story panel (`useScroll` → `y`).
+- Tests extended (MemoryRouter wrappers, sign-in, profile nav, logout) — **81 passing**; typecheck, lint, build all passing.
+
+**HTML-faithful events marquee (same day):** rebuilt the events marquee to match the reference `home.html` exactly — real Unsplash photo thumbnails (replacing gradient+icon placeholders) in `src/data/home-content.ts`, card anatomy matching the HTML (`w-96` glassy cards `bg-white/[0.04]`→surface tokens, `h-56` object-cover image, `font-general`-style title, `text-white/45` description, date/time row, venue row, full-width "Join" pill), per-card `translateY` stagger offsets (`[4, 37, -45, 43, -44, 38, 35, 5]`), and the exact 80s `carousel-scroll` CSS loop via `.carousel-track` keyframes. Section now `hero-gradient-bg flex h-screen items-center overflow-hidden` with hover-pause + `prefers-reduced-motion` static. Still **81 passing**; typecheck, lint, build all passing.
+
 ---
 
 # 🧪 Verification Checklist
@@ -432,6 +441,8 @@ Use this before changing a milestone to `🟢 Complete`.
 | 2026-08-18 | 09 — Step 5 — Review & Submit | 🟢 Complete | ReviewStep (T&C + acceptance checkbox, submitSignup with loading/error toast/retry, navigates to /success); 64 tests passing |
 | 2026-08-18 | 10 — Success & Redirect | 🟢 Complete | SuccessPage (Framer Motion confirmation, username greeting, 3s auto-redirect to /home + manual button); 68 tests passing |
 | 2026-08-18 | 11 — Landing Page & Profile | 🟢 Complete | 9-section /home (Three.js lazy hero, events marquee, download, about reveal, bento, story, contact, footer) + /profile banner page; three/fiber added; 77 tests passing |
+| 2026-08-18 | 11 — Enhancements | 🟢 Complete | User dropdown + working logout (session lib, → /signup), profile→home toggle, animated banner background, home scroll animations (progress bar, reveals, parallax); 81 tests passing |
+| 2026-08-18 | 11 — HTML-faithful marquee | 🟢 Complete | Events marquee rebuilt to match reference home.html: real Unsplash thumbs, HTML card anatomy + translateY stagger, 80s carousel-scroll CSS loop, hover-pause, reduced-motion static; 81 tests passing |
 
 ---
 

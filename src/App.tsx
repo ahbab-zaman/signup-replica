@@ -3,7 +3,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-const LandingPage = lazy(() => import("@/pages/LandingPage"));
 const SignupPage = lazy(() => import("@/pages/SignupPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const SuccessPage = lazy(() => import("@/pages/SuccessPage"));
@@ -16,7 +15,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <Suspense fallback={<RouteFallback />}>
-        <LandingPage />
+        <HomePage />
       </Suspense>
     ),
   },
@@ -45,7 +44,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/home",
+    path: "/",
     element: (
       <Suspense fallback={<RouteFallback />}>
         <HomePage />

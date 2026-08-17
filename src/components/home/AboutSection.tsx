@@ -1,5 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { Reveal } from "@/components/home/Reveal";
 import { WordReveal } from "@/components/home/WordReveal";
 
 export function AboutSection() {
@@ -21,9 +22,11 @@ export function AboutSection() {
       className="relative bg-background px-4 py-28 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-7xl text-center">
-        <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
-          Welcome Extroverts
-        </p>
+        <Reveal>
+          <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
+            Welcome Extroverts
+          </p>
+        </Reveal>
         <h2 className="mx-auto mt-6 max-w-3xl text-4xl font-bold leading-tight text-text-primary sm:text-5xl">
           <WordReveal text="discover the nightlife, brunches, and hangouts of your city" />
         </h2>

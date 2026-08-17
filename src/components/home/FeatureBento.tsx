@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Clock, PartyPopper } from "lucide-react";
 import { useRef, type MouseEvent } from "react";
 import { cn } from "@/lib/utils";
+import { Reveal } from "@/components/home/Reveal";
 
 export function SpotlightBadge({ label = "check Live" }: { label?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -76,65 +77,79 @@ export function FeatureBento() {
       className="bg-background px-4 py-28 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-7xl">
-        <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
-          Start partying with strangers
-        </p>
-        <p className="mt-3 max-w-md text-sm text-text-subtle">
-          Turn any night into a party. Live events, zero planning, all vibes.
-        </p>
+        <Reveal>
+          <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
+            Start partying with strangers
+          </p>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <p className="mt-3 max-w-md text-sm text-text-subtle">
+            Turn any night into a party. Live events, zero planning, all vibes.
+          </p>
+        </Reveal>
 
-        <motion.div
-          whileHover={{ scale: 1.01 }}
-          transition={{ duration: 0.15, ease: "easeOut" }}
-          className="relative mt-10 h-[65vh] min-h-[384px] w-full overflow-hidden rounded-md bg-linear-to-br from-accent via-grad-hero-2 to-grad-dl-2"
-        >
-          <div className="absolute inset-0 flex flex-col justify-between p-8 sm:p-10">
-            <div className="max-w-md">
-              <h3 className="text-2xl font-bold text-text-primary sm:text-3xl">
-                Before hours
-              </h3>
-              <p className="mt-2 text-sm text-text-primary/80">
-                The pregame playlist and the door list, before anyone else is
-                even up.
-              </p>
-            </div>
-            <div className="flex items-center">
-              <SpotlightBadge />
-            </div>
-          </div>
-        </motion.div>
-
-        <div className="mt-6 grid gap-6 sm:grid-cols-2">
-          <BentoVideoCard
-            gradient="bg-linear-to-br from-grad-dl-1 via-grad-dl-2 to-grad-dl-3"
-            title="After party"
-            description="The night doesn't end when the lights come up."
-          />
-          <BentoVideoCard
-            gradient="bg-linear-to-br from-grad-hero-1 via-grad-hero-2 to-grad-hero-3"
-            title="FREEEEEEEEEEEEEEEEEEEEE"
-            description="No cover. No excuses. Just show up."
-          />
-          <BentoVideoCard
-            gradient="bg-linear-to-br from-grad-hero-2 to-grad-dl-3"
-            title="Table for one"
-            description="Walk in alone, leave with a crew."
-          />
+        <Reveal delay={0.15} y={32}>
           <motion.div
             whileHover={{ scale: 1.01 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="relative h-64 overflow-hidden rounded-md bg-bento-violet p-8 sm:h-72"
+            className="relative mt-10 h-[65vh] min-h-[384px] w-full overflow-hidden rounded-md bg-linear-to-br from-accent via-grad-hero-2 to-grad-dl-2"
           >
-            <h3 className="text-2xl font-bold leading-snug text-background">
-              Stop scrolling.
-              <br />
-              Start partying.
-            </h3>
-            <PartyPopper
-              aria-hidden="true"
-              className="absolute bottom-6 right-6 h-20 w-20 text-background/25"
-            />
+            <div className="absolute inset-0 flex flex-col justify-between p-8 sm:p-10">
+              <div className="max-w-md">
+                <h3 className="text-2xl font-bold text-text-primary sm:text-3xl">
+                  Before hours
+                </h3>
+                <p className="mt-2 text-sm text-text-primary/80">
+                  The pregame playlist and the door list, before anyone else is
+                  even up.
+                </p>
+              </div>
+              <div className="flex items-center">
+                <SpotlightBadge />
+              </div>
+            </div>
           </motion.div>
+        </Reveal>
+
+        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+          <Reveal delay={0.05}>
+            <BentoVideoCard
+              gradient="bg-linear-to-br from-grad-dl-1 via-grad-dl-2 to-grad-dl-3"
+              title="After party"
+              description="The night doesn't end when the lights come up."
+            />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <BentoVideoCard
+              gradient="bg-linear-to-br from-grad-hero-1 via-grad-hero-2 to-grad-hero-3"
+              title="FREEEEEEEEEEEEEEEEEEEEE"
+              description="No cover. No excuses. Just show up."
+            />
+          </Reveal>
+          <Reveal delay={0.15}>
+            <BentoVideoCard
+              gradient="bg-linear-to-br from-grad-hero-2 to-grad-dl-3"
+              title="Table for one"
+              description="Walk in alone, leave with a crew."
+            />
+          </Reveal>
+          <Reveal delay={0.2}>
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="relative h-64 overflow-hidden rounded-md bg-bento-violet p-8 sm:h-72"
+            >
+              <h3 className="text-2xl font-bold leading-snug text-background">
+                Stop scrolling.
+                <br />
+                Start partying.
+              </h3>
+              <PartyPopper
+                aria-hidden="true"
+                className="absolute bottom-6 right-6 h-20 w-20 text-background/25"
+              />
+            </motion.div>
+          </Reveal>
         </div>
       </div>
     </section>

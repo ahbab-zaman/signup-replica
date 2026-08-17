@@ -47,27 +47,26 @@ function renderStep() {
 }
 
 describe("PronounsStep", () => {
-  it("renders the combobox and a disabled Continue button", () => {
+  it("renders the pronouns field and a disabled Continue button", () => {
     renderStep();
 
     expect(
-      screen.getByRole("heading", { name: "Your pronouns" }),
+      screen.getByRole("heading", {
+        name: "Which pronouns feel right for you?",
+      }),
     ).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Pronouns" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
     expect(screen.getByRole("button", { name: /Back/i })).toBeInTheDocument();
   });
 
-  it("selecting an option from the dropdown fills the field and enables Continue", async () => {
+  it("selecting a pronoun enables Continue", async () => {
     const user = userEvent.setup();
     renderStep();
 
-    const combobox = screen.getByRole("combobox", { name: "Pronouns" });
-    await user.click(combobox);
+    await user.selectOptions(screen.getByRole("combobox", { name: "Pronouns" }), "she/her");
 
-    await user.click(screen.getByRole("option", { name: "she/her" }));
-
-    expect(combobox).toHaveValue("she/her");
+    expect(screen.getByRole("combobox", { name: "Pronouns" })).toHaveValue("she/her");
     expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
   });
 
@@ -75,10 +74,8 @@ describe("PronounsStep", () => {
     const user = userEvent.setup();
     renderStep();
 
-    await user.type(
-      screen.getByRole("combobox", { name: "Pronouns" }),
-      "ze/zir",
-    );
+    await user.selectOptions(screen.getByRole("combobox", { name: "Pronouns" }), "custom");
+    await user.type(screen.getByRole("textbox", { name: "Custom pronouns" }), "ze/zir");
 
     expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
     await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -87,18 +84,21 @@ describe("PronounsStep", () => {
     expect(screen.getByTestId("step-index")).toHaveTextContent("6");
   });
 
-  it("shows an inline error for whitespace-only input and blocks Continue", async () => {
+  it("keeps Continue disabled until a selection is made", () => {
     const user = userEvent.setup();
     renderStep();
 
-    await user.type(
-      screen.getByRole("combobox", { name: "Pronouns" }),
-      "   ",
-    );
+    expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+    void user;
+  });
 
-    expect(
-      await screen.findByText("Select your pronouns"),
-    ).toBeInTheDocument();
+  it("shows the custom input when custom pronouns are selected", async () => {
+    const user = userEvent.setup();
+    renderStep();
+
+    await user.selectOptions(screen.getByRole("combobox", { name: "Pronouns" }), "custom");
+
+    expect(screen.getByRole("textbox", { name: "Custom pronouns" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
   });
 

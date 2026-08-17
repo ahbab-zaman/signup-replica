@@ -58,7 +58,9 @@ describe("UsernameStep", () => {
     renderStep();
 
     expect(
-      screen.getByRole("heading", { name: "Pick a username" }),
+      screen.getByRole("heading", {
+        name: "Create a username that fits your vibe!",
+      }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText("Username")).toBeInTheDocument();
     expect(

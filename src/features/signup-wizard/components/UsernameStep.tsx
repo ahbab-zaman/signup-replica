@@ -1,10 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AtSign, CheckCircle2, XCircle } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { CheckCircle2, XCircle } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { Spinner } from "@/components/ui/Spinner";
 import { USERNAME_CHECK_DEBOUNCE_MS } from "@/lib/constants";
 import { checkUsernameAvailable } from "@/lib/mock-api";
@@ -14,12 +12,22 @@ import {
   type UsernameFields,
 } from "../validators/username.schema";
 import { StepFooter } from "./StepFooter";
+import {
+  wizardCopyClass,
+  wizardFieldClass,
+  wizardFieldErrorClass,
+  wizardLabelClass,
+  wizardPrimaryButtonClass,
+  wizardStepClass,
+  wizardTitleClass,
+} from "./wizardStyles";
 
 type Availability = "idle" | "checking" | "available" | "taken";
 
 export function UsernameStep() {
   const { state, dispatch } = useWizard();
   const [availability, setAvailability] = useState<Availability>("idle");
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const {
     register,
@@ -60,6 +68,10 @@ export function UsernameStep() {
     };
   }, [trimmed, hasFormatError]);
 
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
   const canContinue = availability === "available" && !hasFormatError;
 
   const onValidSubmit = (values: UsernameFields) => {
@@ -79,7 +91,7 @@ export function UsernameStep() {
     availability === "available"
       ? "Username available"
       : availability === "checking"
-        ? "Checking availability…"
+        ? "Checking availability..."
         : "6+ characters. Letters, numbers, and underscores only.";
 
   const inputError =
@@ -87,50 +99,72 @@ export function UsernameStep() {
     (availability === "taken" ? "That username is taken" : undefined);
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className={wizardStepClass}>
       <div>
-        <h2 className="text-2xl font-bold text-text-primary">Pick a username</h2>
-        <p className="mt-2 text-sm text-text-muted">
-          This is how others will see you. Choose something unique.
+        <h2
+          ref={headingRef}
+          tabIndex={-1}
+          className={wizardTitleClass + " focus:outline-none"}
+        >
+          Create a username that fits your vibe!
+        </h2>
+        <p className={wizardCopyClass}>
+          All your Superlatives and Invites will come your way with this name, so make it unforgettable!
         </p>
       </div>
 
-      <form noValidate onSubmit={onSubmit} className="flex flex-col gap-5">
-        <Input
-          label="Username"
-          autoComplete="username"
-          autoCapitalize="none"
-          spellCheck={false}
-          placeholder="cool_user"
-          leftIcon={<AtSign aria-hidden="true" className="h-4 w-4" />}
-          hint={inputError ? undefined : hint}
-          error={inputError}
-          aria-busy={availability === "checking" ? true : undefined}
-          rightSlot={
-            availability === "checking" ? (
-              <Spinner size="sm" aria-hidden="true" />
-            ) : availability === "available" ? (
-              <CheckCircle2
-                aria-hidden="true"
-                className="h-4 w-4 text-success"
-              />
-            ) : availability === "taken" ? (
-              <XCircle aria-hidden="true" className="h-4 w-4 text-error" />
-            ) : undefined
-          }
-          {...register("username")}
-        />
+      <form noValidate onSubmit={onSubmit} className="mt-4 flex flex-col gap-6">
+        <div>
+          <label htmlFor="username" className={wizardLabelClass}>
+            Username
+          </label>
+          <div className="relative">
+            <input
+              id="username"
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
+              placeholder=""
+              aria-busy={availability === "checking" ? true : undefined}
+              aria-invalid={inputError ? true : undefined}
+              aria-describedby={
+                inputError ? "username-error" : "username-hint"
+              }
+              className={wizardFieldClass + " pr-12"}
+              {...register("username")}
+            />
+            <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+              {availability === "checking" ? (
+                <Spinner size="sm" aria-hidden="true" />
+              ) : availability === "available" ? (
+                <CheckCircle2 aria-hidden="true" className="h-5 w-5 text-white" />
+              ) : availability === "taken" ? (
+                <XCircle aria-hidden="true" className="h-5 w-5 text-white" />
+              ) : null}
+            </div>
+          </div>
+          {inputError ? (
+            <p id="username-error" role="alert" className={wizardFieldErrorClass}>
+              {inputError}
+            </p>
+          ) : (
+            <p id="username-hint" className={wizardFieldErrorClass}>
+              {hint}
+            </p>
+          )}
+        </div>
 
         <StepFooter
           onBack={() => dispatch({ type: "PREV_STEP" })}
           primary={
-            <Button
+            <button
               type="submit"
+              aria-label="Continue"
               disabled={!canContinue}
-              className="w-full sm:w-auto"
+              className={wizardPrimaryButtonClass}
             >
-              Continue
-            </Button>
+              NEXT
+            </button>
           }
         />
       </form>

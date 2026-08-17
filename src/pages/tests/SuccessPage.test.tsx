@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SUCCESS_REDIRECT_MS } from "@/lib/constants";
+import { clearSessionUser } from "@/lib/session";
 import SuccessPage from "@/pages/SuccessPage";
 
 function LocationDisplay() {
@@ -29,6 +30,7 @@ describe("SuccessPage", () => {
     cleanup();
     vi.clearAllMocks();
     vi.useRealTimers();
+    clearSessionUser();
   });
 
   it("renders the confirmation with the username and a dashboard button", () => {
@@ -56,7 +58,7 @@ describe("SuccessPage", () => {
       vi.advanceTimersByTime(SUCCESS_REDIRECT_MS);
     });
 
-    expect(screen.getByTestId("location")).toHaveTextContent("/home");
+    expect(screen.getByTestId("location")).toHaveTextContent("/");
   });
 
   it("decrements the countdown every second", () => {
@@ -84,6 +86,6 @@ describe("SuccessPage", () => {
       screen.getByRole("button", { name: "Go to dashboard" }),
     );
 
-    expect(screen.getByTestId("location")).toHaveTextContent("/home");
+    expect(screen.getByTestId("location")).toHaveTextContent("/");
   });
 });

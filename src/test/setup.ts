@@ -18,6 +18,30 @@ if (typeof globalThis.IntersectionObserver === "undefined") {
   globalThis.IntersectionObserver = IntersectionObserverMock;
 }
 
+class ResizeObserverMock implements ResizeObserver {
+  readonly observed = new Set<Element>();
+
+  observe(target: Element): void {
+    this.observed.add(target);
+  }
+
+  unobserve(target: Element): void {
+    this.observed.delete(target);
+  }
+
+  disconnect(): void {
+    this.observed.clear();
+  }
+
+  takeRecords(): ResizeObserverEntry[] {
+    return [];
+  }
+}
+
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = ResizeObserverMock;
+}
+
 if (typeof window !== "undefined" && typeof window.matchMedia !== "function") {
   Object.defineProperty(window, "matchMedia", {
     writable: true,

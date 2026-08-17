@@ -1,19 +1,10 @@
-import {
-  motion,
-  useAnimationFrame,
-  useMotionValue,
-  useReducedMotion,
-} from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import { Calendar, Clock, MapPin } from "lucide-react";
-import { useRef, useState } from "react";
-import { cn } from "@/lib/utils";
 import {
   events,
   marqueeOffsets,
   type EventItem,
 } from "@/data/home-content";
-
-const MARQUEE_SPEED = 0.035;
 
 type EventCardProps = {
   event: EventItem;
@@ -22,45 +13,44 @@ type EventCardProps = {
 };
 
 function EventCard({ event, offset, ariaHidden = false }: EventCardProps) {
-  const Icon = event.icon;
-
   return (
     <article
       aria-hidden={ariaHidden || undefined}
-      className="group w-[19rem] shrink-0 overflow-hidden rounded-xl border border-border bg-surface-secondary transition-colors duration-200 hover:border-border-light hover:bg-surface-hover sm:w-96"
+      className="group w-[24rem] shrink-0 overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.04] backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
       style={{ transform: `translateY(${offset}px)` }}
     >
-      <div
-        className={cn(
-          "flex h-40 items-center justify-center overflow-hidden sm:h-44",
-          event.gradient,
-        )}
-      >
-        <Icon aria-hidden="true" className="h-12 w-12 text-background/40" />
+      <div className="flex h-56 items-center justify-center bg-white/[0.03]">
+        <img
+          src={event.image}
+          alt={event.title}
+          loading="lazy"
+          className="h-full w-full object-cover"
+        />
       </div>
       <div className="p-6">
-        <h3 className="text-lg font-semibold text-text-primary">
+        <h3 className="text-xl font-semibold leading-snug text-white">
           {event.title}
         </h3>
-        <p className="mt-1.5 line-clamp-2 text-sm text-text-muted">
+        <p className="mt-2 text-base leading-relaxed text-white/58">
           {event.description}
         </p>
-        <div className="mt-4 space-y-2 text-sm text-text-muted">
-          <p className="flex items-center gap-2">
-            <Calendar aria-hidden="true" className="h-4 w-4 text-icon-muted" />
+        <div className="mt-4 flex items-center gap-4 text-base text-white/48">
+          <span className="inline-flex items-center gap-1.5">
+            <Calendar aria-hidden="true" className="h-4 w-4 text-white/35" />
             {event.date}
-            <span className="text-icon-muted">·</span>
-            <Clock aria-hidden="true" className="h-4 w-4 text-icon-muted" />
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Clock aria-hidden="true" className="h-4 w-4 text-white/35" />
             {event.time}
-          </p>
-          <p className="flex items-center gap-2">
-            <MapPin aria-hidden="true" className="h-4 w-4 text-icon-muted" />
-            {event.venue}
-          </p>
+          </span>
+        </div>
+        <div className="mt-2.5 flex items-center gap-1.5 text-base text-white/48">
+          <MapPin aria-hidden="true" className="h-4 w-4 text-white/35" />
+          {event.venue}
         </div>
         <button
           type="button"
-          className="mt-5 w-full rounded-full bg-text-primary py-2.5 text-sm font-semibold text-background transition-colors hover:bg-text-primary/90"
+          className="mt-6 w-full rounded-full bg-white py-3 text-base font-semibold text-black transition-all duration-300 hover:bg-white/92 hover:shadow-lg hover:shadow-white/10"
         >
           Join
         </button>
@@ -71,41 +61,37 @@ function EventCard({ event, offset, ariaHidden = false }: EventCardProps) {
 
 export function EventsMarquee() {
   const reduceMotion = useReducedMotion();
-  const [paused, setPaused] = useState(false);
-  const x = useMotionValue(0);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useAnimationFrame((_, delta) => {
-    if (reduceMotion || paused) return;
-    const track = trackRef.current;
-    if (!track) return;
-    const half = track.scrollWidth / 2;
-    if (half <= 0) return;
-    const next = x.get() - MARQUEE_SPEED * delta;
-    x.set(next <= -half ? next + half : next);
-  });
+  const marqueeEvents = [...events, ...events];
 
   return (
-    <section id="events" className="relative overflow-hidden bg-background py-24">
-      <div
-        className="group/row cursor-default"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        <motion.div ref={trackRef} style={{ x }} className="flex w-max">
-          {[0, 1].map((group) => (
-            <div key={group} className="flex gap-6 pr-6">
-              {events.map((event, index) => (
+    <section
+      id="events"
+      className="hero-gradient-bg flex min-h-screen items-center overflow-hidden py-12"
+    >
+      <div className="w-full">
+        {reduceMotion ? (
+          <div className="flex gap-6 overflow-x-auto px-6 sm:px-10">
+            {events.map((event, index) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                offset={marqueeOffsets[index % marqueeOffsets.length]}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="group overflow-hidden py-10">
+            <div className="carousel-track gap-6 px-6 group-hover:carousel-track-paused">
+              {marqueeEvents.map((event, index) => (
                 <EventCard
-                  key={event.id}
+                  key={`${event.id}-${index}`}
                   event={event}
                   offset={marqueeOffsets[index % marqueeOffsets.length]}
-                  ariaHidden={group === 1}
                 />
               ))}
             </div>
-          ))}
-        </motion.div>
+          </div>
+        )}
       </div>
     </section>
   );

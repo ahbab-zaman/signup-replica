@@ -1,236 +1,272 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useController, useForm } from "react-hook-form";
-import type { z } from "zod";
-import { Button } from "@/components/ui/Button";
-import { Select } from "@/components/ui/Select";
+import { CalendarDays } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { MIN_AGE } from "@/lib/constants";
 import { calculateAge } from "@/lib/utils";
 import { useWizard } from "../hooks/useWizard";
-import { ageSchema, type AgeFields } from "../validators/age.schema";
 import { StepFooter } from "./StepFooter";
+import {
+  wizardCalendarPanelClass,
+  wizardCalendarSelectClass,
+  wizardCopyClass,
+  wizardDateFieldClass,
+  wizardFieldErrorClass,
+  wizardLabelClass,
+  wizardPrimaryButtonClass,
+  wizardSelectWrapClass,
+  wizardStepClass,
+  wizardTitleClass,
+} from "./wizardStyles";
 
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+function formatIsoDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
-const CURRENT_YEAR = new Date().getFullYear();
-const YEAR_OPTIONS = Array.from({ length: 101 }, (_, i) =>
-  String(CURRENT_YEAR - i),
-);
+function birthDateFromAge(age: number): string {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() - age);
+  return formatIsoDate(date);
+}
 
 export function AgeStep() {
   const { state, dispatch } = useWizard();
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const [month, setMonth] = useState("");
-  const [day, setDay] = useState("");
-  const [year, setYear] = useState("");
-
-  const { control, handleSubmit, formState, trigger } = useForm<
-    z.input<typeof ageSchema>,
-    unknown,
-    AgeFields
-  >({
-    resolver: zodResolver(ageSchema),
-    mode: "onChange",
-    defaultValues: { dateOfBirth: state.fields.dateOfBirth },
-  });
-  const { field } = useController({ name: "dateOfBirth", control });
-
-  const monthIndex = MONTHS.indexOf(month);
-  const yearNum = Number(year);
-  const dayNum = Number(day);
-  const complete = Boolean(month && day && year);
-  const computedDate = complete
-    ? new Date(yearNum, monthIndex, dayNum)
-    : null;
-  const isValidDate =
-    computedDate !== null &&
-    computedDate.getFullYear() === yearNum &&
-    computedDate.getMonth() === monthIndex &&
-    computedDate.getDate() === dayNum;
-  const isoDate = isValidDate
-    ? `${String(yearNum).padStart(4, "0")}-${String(monthIndex + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`
-    : "";
-  const age = isValidDate ? calculateAge(isoDate) : null;
-  const maxDays =
-    month && year
-      ? new Date(yearNum, monthIndex + 1, 0).getDate()
-      : 31;
-
-  const syncDate = (m: string, d: string, y: string) => {
-    if (!m || !d || !y) {
-      field.onChange("");
-      void trigger("dateOfBirth");
-      return;
-    }
-    const idx = MONTHS.indexOf(m);
-    const dayNumValue = Number(d);
-    const yearNumValue = Number(y);
-    const date = new Date(yearNumValue, idx, dayNumValue);
-    const valid =
-      date.getFullYear() === yearNumValue &&
-      date.getMonth() === idx &&
-      date.getDate() === dayNumValue;
-    const iso = valid
-      ? `${String(yearNumValue).padStart(4, "0")}-${String(idx + 1).padStart(2, "0")}-${String(dayNumValue).padStart(2, "0")}`
-      : "";
-    field.onChange(iso);
-    void trigger("dateOfBirth");
-  };
-
-  const handleMonthChange = (value: string) => {
-    setMonth(value);
-    const max = value && year
-      ? new Date(Number(year), MONTHS.indexOf(value) + 1, 0).getDate()
-      : 31;
-    const nextDay = day && Number(day) > max ? "" : day;
-    setDay(nextDay);
-    syncDate(value, nextDay, year);
-  };
-
-  const handleDayChange = (value: string) => {
-    setDay(value);
-    syncDate(month, value, year);
-  };
-
-  const handleYearChange = (value: string) => {
-    setYear(value);
-    const max = month && value
-      ? new Date(Number(value), MONTHS.indexOf(month) + 1, 0).getDate()
-      : 31;
-    const nextDay = day && Number(day) > max ? "" : day;
-    setDay(nextDay);
-    syncDate(month, nextDay, value);
-  };
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [selectedYear, setSelectedYear] = useState<number | "">("");
+  const [selectedMonth, setSelectedMonth] = useState<number | "">("");
+  const [selectedDay, setSelectedDay] = useState<number | "">("");
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   useEffect(() => {
-    const iso = state.fields.dateOfBirth;
-    if (!iso) return;
-    const [y, m, d] = iso.split("-").map(Number);
-    setYear(String(y));
-    setMonth(MONTHS[m - 1] ?? "");
-    setDay(String(d));
+    const savedDate = state.fields.dateOfBirth;
+    if (savedDate) {
+      const [year, month, day] = savedDate.split("-").map(Number);
+      setDateOfBirth(savedDate);
+      setSelectedYear(year);
+      setSelectedMonth(month);
+      setSelectedDay(day);
+    } else {
+      setDateOfBirth("");
+      setSelectedYear("");
+      setSelectedMonth("");
+      setSelectedDay("");
+    }
+    headingRef.current?.focus();
   }, [state.fields.dateOfBirth]);
 
-  useEffect(() => {
-    headingRef.current?.focus();
+  const yearOptions = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const earliestYear = currentYear - 120;
+    const latestYear = currentYear - MIN_AGE;
+
+    return Array.from(
+      { length: latestYear - earliestYear + 1 },
+      (_, index) => latestYear - index,
+    );
   }, []);
 
-  const canContinue = complete && isValidDate && !formState.errors.dateOfBirth;
-  const errorText = formState.errors.dateOfBirth?.message;
+  const monthOptions = useMemo(
+    () =>
+      Array.from({ length: 12 }, (_, index) => ({
+        value: index + 1,
+        label: new Date(2000, index, 1).toLocaleString("en-US", {
+          month: "long",
+        }),
+      })),
+    [],
+  );
 
-  const onValidSubmit = (values: AgeFields) => {
+  const activeYear = selectedYear || new Date().getFullYear() - MIN_AGE;
+  const activeMonth = selectedMonth || 1;
+
+  const dayOptions = useMemo(() => {
+    const totalDays = new Date(activeYear, activeMonth, 0).getDate();
+    return Array.from({ length: totalDays }, (_, index) => index + 1);
+  }, [activeMonth, activeYear]);
+
+  useEffect(() => {
+    if (!selectedYear || !selectedMonth || !selectedDay) {
+      return;
+    }
+
+    const validDate = new Date(selectedYear, selectedMonth - 1, selectedDay);
+    if (Number.isNaN(validDate.getTime())) {
+      return;
+    }
+
+    const isoDate = formatIsoDate(validDate);
+    setDateOfBirth(isoDate);
+    setIsCalendarOpen(false);
+  }, [selectedDay, selectedMonth, selectedYear]);
+
+  const selectedAge = dateOfBirth ? calculateAge(dateOfBirth) : -1;
+  const dobIsValid = dateOfBirth.trim().length > 0 && selectedAge >= MIN_AGE;
+  const minDob = birthDateFromAge(120);
+  const maxDob = birthDateFromAge(MIN_AGE);
+  const ageError =
+    dateOfBirth.trim().length === 0
+      ? undefined
+      : selectedAge < 0
+        ? "Select a valid date of birth"
+        : selectedAge < MIN_AGE
+          ? `You must be ${MIN_AGE} or older to sign up`
+          : undefined;
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!dobIsValid) return;
     dispatch({
       type: "SAVE_FIELD",
       field: "dateOfBirth",
-      value: values.dateOfBirth,
+      value: dateOfBirth,
     });
     dispatch({ type: "NEXT_STEP" });
   };
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    void handleSubmit(onValidSubmit)(event);
-  };
+  const visibleDate = dateOfBirth
+    ? new Date(`${dateOfBirth}T00:00:00`).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "Select your date of birth";
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className={wizardStepClass}>
       <div>
         <h2
           ref={headingRef}
           tabIndex={-1}
-          className="text-2xl font-bold text-text-primary focus:outline-none"
+          className={wizardTitleClass + " focus:outline-none"}
         >
-          When were you born?
+          What is your date of birth?
         </h2>
-        <p className="mt-2 text-sm text-text-muted">
-          You must be 18 or older to sign up.
+        <p className={wizardCopyClass}>
+          We use your date of birth to verify you&apos;re eligible and keep the experience age-appropriate.
         </p>
       </div>
 
-      <form noValidate onSubmit={onSubmit} className="flex flex-col gap-5">
-        <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-3 gap-3">
-            <Select
-              label="Month"
-              value={month}
-              onChange={(event) => handleMonthChange(event.target.value)}
+      <form noValidate onSubmit={onSubmit} className="mt-4 flex flex-col gap-6">
+        <div>
+          <label htmlFor="dateOfBirth" className={wizardLabelClass}>
+            Date of birth
+          </label>
+          <div className={wizardSelectWrapClass}>
+            <button
+              id="dateOfBirth"
+              type="button"
+              aria-label="Date of birth"
+              aria-haspopup="dialog"
+              aria-expanded={isCalendarOpen}
+              onClick={() => setIsCalendarOpen((open) => !open)}
+              className={wizardDateFieldClass + " flex items-center justify-between gap-4"}
             >
-              <option value="">Month</option>
-              {MONTHS.map((m) => (
-                <option key={m} value={m}>
-                  {m}
-                </option>
-              ))}
-            </Select>
+              <span className={dateOfBirth ? "text-white" : "text-white/45"}>
+                {visibleDate}
+              </span>
+              <CalendarDays className="h-5 w-5 shrink-0 text-white/35" />
+            </button>
 
-            <Select
-              label="Day"
-              value={day}
-              onChange={(event) => handleDayChange(event.target.value)}
-            >
-              <option value="">Day</option>
-              {Array.from({ length: maxDays }, (_, i) => (
-                <option key={i + 1} value={String(i + 1)}>
-                  {i + 1}
-                </option>
-              ))}
-            </Select>
+            {isCalendarOpen ? (
+              <div className={wizardCalendarPanelClass} role="dialog" aria-label="Date picker">
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="mb-2 block text-[0.7rem] font-medium uppercase tracking-[0.12em] text-white/55">
+                      Day
+                    </label>
+                    <select
+                      value={selectedDay}
+                      onChange={(event) => setSelectedDay(Number(event.target.value) || "")}
+                      className={wizardCalendarSelectClass}
+                    >
+                      <option value="">Day</option>
+                      {dayOptions.map((day) => (
+                        <option key={day} value={day}>
+                          {day}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-            <Select
-              label="Year"
-              value={year}
-              onChange={(event) => handleYearChange(event.target.value)}
-            >
-              <option value="">Year</option>
-              {YEAR_OPTIONS.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </Select>
+                  <div>
+                    <label className="mb-2 block text-[0.7rem] font-medium uppercase tracking-[0.12em] text-white/55">
+                      Month
+                    </label>
+                    <select
+                      value={selectedMonth}
+                      onChange={(event) => {
+                        setSelectedMonth(Number(event.target.value) || "");
+                        setSelectedDay("");
+                      }}
+                      className={wizardCalendarSelectClass}
+                    >
+                      <option value="">Month</option>
+                      {monthOptions.map((month) => (
+                        <option key={month.value} value={month.value}>
+                          {month.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-[0.7rem] font-medium uppercase tracking-[0.12em] text-white/55">
+                      Year
+                    </label>
+                    <select
+                      value={selectedYear}
+                      onChange={(event) => {
+                        setSelectedYear(Number(event.target.value) || "");
+                        setSelectedDay("");
+                      }}
+                      className={wizardCalendarSelectClass}
+                    >
+                      <option value="">Year</option>
+                      {yearOptions.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsCalendarOpen(false)}
+                    className="text-[0.75rem] font-medium uppercase tracking-[0.12em] text-white/60 transition-colors hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <div className="text-right text-[0.68rem] uppercase tracking-[0.12em] text-white/45">
+                    {selectedAge >= 0 ? `${selectedAge} yrs` : "Age pending"}
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </div>
 
-          <div className="min-h-5">
-            {age !== null ? (
-              <p className="text-xs text-text-muted">
-                You are {age} years old.
-              </p>
-            ) : (
-              !complete && (
-                <p className="text-xs text-text-muted">
-                  Select your date of birth.
-                </p>
-              )
-            )}
-            {errorText && complete && (
-              <p role="alert" className="mt-1 text-xs text-error-foreground">
-                {errorText}
-              </p>
-            )}
-          </div>
+          {ageError ? (
+            <p role="alert" className={wizardFieldErrorClass}>
+              {ageError}
+            </p>
+          ) : null}
         </div>
 
         <StepFooter
           onBack={() => dispatch({ type: "PREV_STEP" })}
           primary={
-            <Button
+            <button
               type="submit"
-              disabled={!canContinue}
-              className="w-full sm:w-auto"
+              aria-label="Continue"
+              disabled={!dobIsValid}
+              className={wizardPrimaryButtonClass}
             >
-              Continue
-            </Button>
+              NEXT
+            </button>
           }
         />
       </form>

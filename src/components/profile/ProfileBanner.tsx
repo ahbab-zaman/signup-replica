@@ -1,6 +1,8 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { ImagePlus } from "lucide-react";
+import { Home, ImagePlus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { mockProfile } from "@/data/mock-profile";
+import { ProfileBannerBackground } from "@/components/profile/ProfileBannerBackground";
 
 function getInitials(name: string): string {
   return name
@@ -12,6 +14,7 @@ function getInitials(name: string): string {
 }
 
 export function ProfileBanner() {
+  const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const { name, username, age, pronouns } = mockProfile;
   const initials = getInitials(name);
@@ -23,24 +26,25 @@ export function ProfileBanner() {
   };
 
   return (
-    <header className="relative h-[380px] overflow-hidden bg-linear-to-b from-profile-banner-start via-profile-banner-start to-profile-banner-end sm:h-[440px]">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-text-primary/10"
-        style={{
-          maskImage:
-            "radial-gradient(80% 60% at 50% 0%, black, transparent 70%)",
-          WebkitMaskImage:
-            "radial-gradient(80% 60% at 50% 0%, black, transparent 70%)",
-        }}
-      />
+    <header className="relative h-[380px] overflow-hidden sm:h-[440px]">
+      <ProfileBannerBackground />
 
-      <span
-        className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-overlay/50 text-base font-bold text-text-primary backdrop-blur-sm"
-        aria-hidden="true"
-      >
-        E
-      </span>
+      <div className="absolute left-4 top-4 z-10 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          aria-label="Go to home"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-overlay/50 text-text-primary backdrop-blur-sm transition-colors hover:bg-overlay/70 focus:outline-none focus:ring-2 focus:ring-text-primary/60"
+        >
+          <Home aria-hidden="true" className="h-5 w-5" />
+        </button>
+        <span
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-overlay/50 text-base font-bold text-text-primary backdrop-blur-sm"
+          aria-hidden="true"
+        >
+          E
+        </span>
+      </div>
 
       <div
         aria-hidden="true"

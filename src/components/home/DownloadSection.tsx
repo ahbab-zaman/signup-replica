@@ -1,4 +1,5 @@
 import { Apple, Smartphone } from "lucide-react";
+import { Reveal } from "@/components/home/Reveal";
 import { WordReveal } from "@/components/home/WordReveal";
 
 const DOWNLOAD_LINKS = [
@@ -44,9 +45,11 @@ export function DownloadSection() {
         })}
       </div>
 
-      <p className="mt-10 text-[11px] font-medium uppercase tracking-widest text-text-primary/70">
-        You will probably see honey on the app...
-      </p>
+      <Reveal delay={0.25}>
+        <p className="mt-10 text-[11px] font-medium uppercase tracking-widest text-text-primary/70">
+          You will probably see honey on the app...
+        </p>
+      </Reveal>
     </section>
   );
 }

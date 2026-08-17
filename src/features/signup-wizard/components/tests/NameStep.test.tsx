@@ -51,7 +51,9 @@ describe("NameStep", () => {
     renderStep();
 
     expect(
-      screen.getByRole("heading", { name: "What should we call you?" }),
+      screen.getByRole("heading", {
+        name: '"Name, please, for the party check!"',
+      }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText("Name")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();

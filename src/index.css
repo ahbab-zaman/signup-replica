@@ -80,6 +80,44 @@
   --shadow-popover: 0px 18px 50px rgba(0, 0, 0, 0.6);
 }
 
+@layer utilities {
+  .hero-gradient-bg {
+    background:
+      linear-gradient(
+        115deg,
+        color-mix(in srgb, var(--color-grad-hero-1) 22%, transparent) 0%,
+        color-mix(in srgb, var(--color-grad-hero-2) 12%, transparent) 40%,
+        transparent 72%
+      ),
+      var(--color-background);
+  }
+
+  .carousel-track {
+    display: flex;
+    width: max-content;
+    animation: carousel-scroll 80s linear infinite;
+  }
+
+  .carousel-track-paused {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-track {
+      animation: none;
+    }
+  }
+}
+
+@keyframes carousel-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @layer base {
   html {
     color-scheme: dark;
@@ -99,6 +137,33 @@
     text-rendering: optimizeLegibility;
   }
 
+  select,
+  input[type="date"] {
+    color-scheme: dark;
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  select option {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.8;
+    filter: invert(1) brightness(1.2);
+  }
+
+  input[type="date"]::-webkit-datetime-edit,
+  input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+  input[type="date"]::-webkit-datetime-edit-text,
+  input[type="date"]::-webkit-datetime-edit-day-field,
+  input[type="date"]::-webkit-datetime-edit-month-field,
+  input[type="date"]::-webkit-datetime-edit-year-field {
+    color: var(--color-text-primary);
+  }
+
   *,
   *::before,
   *::after {
@@ -115,3 +180,4 @@
     color: var(--color-text-primary);
   }
 }
+

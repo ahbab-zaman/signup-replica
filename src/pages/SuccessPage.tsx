@@ -4,16 +4,23 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { SUCCESS_REDIRECT_MS } from "@/lib/constants";
+import { setSessionUser } from "@/lib/session";
 
 const REDIRECT_TICK_MS = 1_000;
 
 export default function SuccessPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const username = (location.state as { username?: string } | null)?.username;
+  const state = location.state as { username?: string; name?: string } | null;
+  const username = state?.username;
   const [secondsLeft, setSecondsLeft] = useState(
     Math.round(SUCCESS_REDIRECT_MS / REDIRECT_TICK_MS),
   );
+
+  useEffect(() => {
+    if (!username) return;
+    setSessionUser({ username, name: state?.name ?? username });
+  }, [username, state?.name]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -72,7 +79,7 @@ export default function SuccessPage() {
           </div>
 
           <Button
-            onClick={() => navigate("/home", { replace: true })}
+            onClick={() => navigate("/", { replace: true })}
             className="w-full sm:w-auto"
           >
             Go to dashboard

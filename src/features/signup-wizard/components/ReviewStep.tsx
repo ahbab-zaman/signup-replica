@@ -1,10 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
 import type { z } from "zod";
-import { Button } from "@/components/ui/Button";
-import { Checkbox } from "@/components/ui/Checkbox";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/useToast";
 import { submitSignup } from "@/lib/mock-api";
 import { useWizard } from "../hooks/useWizard";
@@ -13,6 +11,15 @@ import {
   type ReviewFields,
 } from "../validators/review.schema";
 import { StepFooter } from "./StepFooter";
+import {
+  wizardCopyClass,
+  wizardFieldErrorClass,
+  wizardLinkClass,
+  wizardPrimaryButtonClass,
+  wizardStepClass,
+  wizardTermsCardClass,
+  wizardTitleClass,
+} from "./wizardStyles";
 
 export function ReviewStep() {
   const { state, dispatch } = useWizard();
@@ -58,7 +65,10 @@ export function ReviewStep() {
       });
       dispatch({ type: "SET_STATUS", status: "success" });
       navigate("/success", {
-        state: { username: state.fields.username },
+        state: {
+          username: state.fields.username,
+          name: state.fields.name,
+        },
       });
     } catch {
       dispatch({ type: "SET_STATUS", status: "idle" });
@@ -77,54 +87,61 @@ export function ReviewStep() {
   };
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className={wizardStepClass}>
       <div>
         <h2
           ref={headingRef}
           tabIndex={-1}
-          className="text-2xl font-bold text-text-primary focus:outline-none"
+          className={wizardTitleClass + " focus:outline-none"}
         >
           Almost there
         </h2>
-        <p className="mt-2 text-sm text-text-muted">
+        <p className={wizardCopyClass}>
           Accept the terms to finish creating your account.
         </p>
       </div>
 
-      <form noValidate onSubmit={onSubmit} className="flex flex-col gap-5">
-        <div className="rounded-lg border border-border bg-surface-tertiary p-4">
-          <p className="text-xs leading-relaxed text-text-muted">
-            By creating an account, you agree to our Terms &amp; Conditions and
-            Privacy Policy. You must be 18 or older to use this service. We
-            collect your email, username, and date of birth to personalize your
-            experience, and you can request to delete your data at any time.
+      <form noValidate onSubmit={onSubmit} className="mt-4 flex flex-col gap-6">
+        <div className={wizardTermsCardClass}>
+          <p className="text-[0.98rem] leading-[1.7] text-white/78">
+            By creating an account, you agree to our Terms &amp; Conditions and Privacy Policy. You must be 18 or older to use this service. We collect your email, username, and date of birth to personalize your experience, and you can request to delete your data at any time.
           </p>
-          <Link
-            to="/terms"
-            className="mt-3 inline-block text-xs font-medium text-accent underline underline-offset-2 hover:text-accent-light focus:outline-none focus:ring-2 focus:ring-accent"
-          >
-            View full terms &rarr;
+          <Link to="/terms" className={wizardLinkClass + " mt-4"}>
+            View full terms →
           </Link>
         </div>
 
-        <Checkbox
-          label="I agree to the Terms &amp; Conditions."
-          disabled={isSubmitting}
-          error={errors.termsAccepted?.message}
-          {...register("termsAccepted")}
-        />
+        <label className="flex items-start gap-4">
+          <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] border border-white/75 bg-white">
+            <input
+              type="checkbox"
+              disabled={isSubmitting}
+              className="sr-only"
+              {...register("termsAccepted")}
+            />
+            {termsAccepted ? <span className="h-4 w-4 text-black">✓</span> : null}
+          </span>
+          <span className="text-[1.05rem] leading-[1.35] text-white">
+            I agree to the Terms &amp; Conditions.
+          </span>
+        </label>
+        {errors.termsAccepted ? (
+          <p role="alert" className={wizardFieldErrorClass}>
+            {errors.termsAccepted.message}
+          </p>
+        ) : null}
 
         <StepFooter
           onBack={() => dispatch({ type: "PREV_STEP" })}
           primary={
-            <Button
+            <button
               type="submit"
-              loading={isSubmitting}
+              aria-label="Sign up"
               disabled={!termsAccepted || isSubmitting}
-              className="w-full sm:w-auto"
+              className={wizardPrimaryButtonClass}
             >
-              Sign up
-            </Button>
+              SIGN UP
+            </button>
           }
         />
       </form>

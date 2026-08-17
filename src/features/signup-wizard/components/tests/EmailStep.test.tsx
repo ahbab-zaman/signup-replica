@@ -50,12 +50,10 @@ describe("EmailStep", () => {
     renderStep();
 
     expect(
-      screen.getByRole("heading", { name: "Your email" }),
+      screen.getByRole("heading", { name: "Enter your email" }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("Send me occasional product updates"),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+    expect(screen.getByLabelText("I'd like to subscribe to your newsletter")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Continue" }),
     ).toBeDisabled();
@@ -65,7 +63,7 @@ describe("EmailStep", () => {
     const user = userEvent.setup();
     renderStep();
 
-    const emailInput = screen.getByLabelText("Email address");
+    const emailInput = screen.getByLabelText("Email");
     await user.type(emailInput, "not-an-email");
     await user.tab();
 
@@ -83,7 +81,7 @@ describe("EmailStep", () => {
     renderStep();
 
     await user.type(
-      screen.getByLabelText("Email address"),
+      screen.getByLabelText("Email"),
       "ada@example.com",
     );
     await user.tab();
@@ -103,7 +101,7 @@ describe("EmailStep", () => {
     renderStep();
 
     await user.type(
-      screen.getByLabelText("Email address"),
+      screen.getByLabelText("Email"),
       "ada@example.com",
     );
     await user.tab();
@@ -113,7 +111,7 @@ describe("EmailStep", () => {
       await screen.findByText("Couldn't send your code"),
     ).toBeInTheDocument();
     expect(screen.getByTestId("step-index")).toHaveTextContent("0");
-    expect(screen.getByLabelText("Email address")).toHaveValue(
+    expect(screen.getByLabelText("Email")).toHaveValue(
       "ada@example.com",
     );
   });

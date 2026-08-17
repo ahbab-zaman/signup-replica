@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useReducer, type ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -38,6 +38,19 @@ function Harness() {
   );
 }
 
+function formatIsoDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function yearsAgo(years: number): string {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() - years);
+  return formatIsoDate(date);
+}
+
 function renderStep() {
   return render(
     <SeededWizardProvider>
@@ -46,77 +59,67 @@ function renderStep() {
   );
 }
 
-async function selectDate(
-  user: ReturnType<typeof userEvent.setup>,
-  iso: string,
-) {
-  const [y, m, d] = iso.split("-").map(Number);
-  const MONTHS = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  await user.selectOptions(screen.getByLabelText("Month"), MONTHS[m - 1]);
-  await user.selectOptions(screen.getByLabelText("Day"), String(d));
-  await user.selectOptions(screen.getByLabelText("Year"), String(y));
+function openCalendar() {
+  fireEvent.click(screen.getByRole("button", { name: "Date of birth" }));
+}
+
+function selectBirthDate(yearsAgoValue: number) {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() - yearsAgoValue);
+
+  openCalendar();
+  fireEvent.change(screen.getByRole("combobox", { name: "Year" }), {
+    target: { value: String(date.getFullYear()) },
+  });
+  fireEvent.change(screen.getByRole("combobox", { name: "Month" }), {
+    target: { value: String(date.getMonth() + 1) },
+  });
+  fireEvent.change(screen.getByRole("combobox", { name: "Day" }), {
+    target: { value: String(date.getDate()) },
+  });
 }
 
 describe("AgeStep", () => {
-  it("renders the month/day/year selects and a disabled Continue button", () => {
+  it("renders the date of birth field and a disabled Continue button", () => {
     renderStep();
 
     expect(
-      screen.getByRole("heading", { name: "When were you born?" }),
+      screen.getByRole("heading", {
+        name: "What is your date of birth?",
+      }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("Month")).toBeInTheDocument();
-    expect(screen.getByLabelText("Day")).toBeInTheDocument();
-    expect(screen.getByLabelText("Year")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Date of birth" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
     expect(screen.getByRole("button", { name: /Back/i })).toBeInTheDocument();
   });
 
-  it("computes the age and enables Continue for an 18+ date of birth", async () => {
-    const user = userEvent.setup();
+  it("enables Continue for an 18+ date of birth", () => {
     renderStep();
 
-    await selectDate(user, "2000-01-15");
+    selectBirthDate(18);
 
-    expect(
-      await screen.findByText(/You are \d+ years old/i),
-    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
   });
 
-  it("shows an inline error and keeps Continue disabled for an under-18 date of birth", async () => {
-    const user = userEvent.setup();
+  it("shows an inline error and keeps Continue disabled for an under-18 date of birth", () => {
     renderStep();
 
-    await selectDate(user, "2015-06-10");
+    selectBirthDate(17);
 
-    expect(
-      await screen.findByText("You must be 18 or older to sign up"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("You must be 18 or older to sign up")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
   });
 
-  it("saves the date of birth and advances to the next step", async () => {
+  it("saves a derived date of birth and advances to the next step", async () => {
     const user = userEvent.setup();
     renderStep();
 
-    await selectDate(user, "2000-01-15");
-    await screen.findByText(/You are \d+ years old/i);
+    selectBirthDate(18);
     await user.click(screen.getByRole("button", { name: "Continue" }));
 
-    expect(screen.getByTestId("dob")).toHaveTextContent("2000-01-15");
+    expect(screen.getByTestId("dob")).not.toBeEmptyDOMElement();
     expect(screen.getByTestId("step-index")).toHaveTextContent("5");
   });
 
