@@ -22,6 +22,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         variant: input.variant ?? "info",
         title: input.title,
         description: input.description,
+        onClick: input.onClick,
       };
 
       setToasts((prev) => {

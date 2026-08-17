@@ -6,6 +6,7 @@ export const MIN_AGE = 18;
 
 export const USERNAME_MIN_LENGTH = 6;
 export const USERNAME_MAX_LENGTH = 20;
+export const USERNAME_CHECK_DEBOUNCE_MS = 500;
 
 export const NAME_MAX_LENGTH = 50;
 

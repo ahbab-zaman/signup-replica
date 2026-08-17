@@ -49,7 +49,10 @@ export function EmailStep() {
       toast({
         variant: "info",
         title: `Demo OTP: ${code}`,
-        description: "Use this code on the next step. Testing aid only.",
+        description: "Use this code on the next step. Tap the copy icon.",
+        onClick: () => {
+          void navigator.clipboard?.writeText(code);
+        },
       });
       dispatch({ type: "NEXT_STEP" });
     } catch {

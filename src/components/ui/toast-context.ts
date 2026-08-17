@@ -5,6 +5,7 @@ export type ToastInput = {
   variant?: ToastVariant;
   title: string;
   description?: string;
+  onClick?: () => void;
 };
 
 export type ToastContextValue = {

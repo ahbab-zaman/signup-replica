@@ -1,5 +1,12 @@
 import { motion } from "framer-motion";
-import { AlertCircle, CheckCircle2, Info, X, XCircle } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Copy,
+  Info,
+  X,
+  XCircle,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +17,7 @@ export type ToastItem = {
   variant: ToastVariant;
   title: string;
   description?: string;
+  onClick?: () => void;
 };
 
 type ToastProps = {
@@ -61,6 +69,16 @@ export function Toast({ toast, onDismiss }: ToastProps) {
           <p className="mt-0.5 text-xs text-text-muted">{toast.description}</p>
         )}
       </div>
+      {toast.onClick && (
+        <button
+          type="button"
+          onClick={toast.onClick}
+          aria-label="Copy code to clipboard"
+          className="shrink-0 rounded p-1 text-icon-muted transition-colors hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+        >
+          <Copy aria-hidden="true" className="h-4 w-4" />
+        </button>
+      )}
       <button
         type="button"
         onClick={() => onDismiss(toast.id)}
