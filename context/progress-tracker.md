@@ -8,12 +8,12 @@
 
 ## 📊 Overall Progress
 
-**Completed:** `8 / 14` milestones
+**Completed:** `10 / 14` milestones
 **In Progress:** `0`
 **Blocked:** `0`
-**Progress:** `57%`
+**Progress:** `71%`
 
-`███████████░░░░░░░░░` **57%**
+`██████████████░░░░░░` **71%**
 
 ### Status Legend
 
@@ -38,8 +38,8 @@
 | 06 | **Step 2 — Name** | 🟢 Complete | RHF validation, trimmed save, inline error |
 | 07 | **Step 3 — Age (DOB)** | 🟢 Complete | Month/day/year selects, live age, 18+ enforcement with inline error |
 | 08 | **Step 4 — Pronouns** | 🟢 Complete | Custom combobox dropdown, auto-fill on select, custom input allowed |
-| 09 | **Step 5 — Review & Submit** | ⬜ Not Started | T&C acceptance only, no data recap |
-| 10 | **Success & Redirect** | ⬜ Not Started | |
+| 09 | **Step 5 — Review & Submit** | 🟢 Complete | T&C acceptance only, no data recap, submit with loading/error toast/retry |
+| 10 | **Success & Redirect** | 🟢 Complete | Animated confirmation screen, personalizes username, auto-redirect to /home after 3s + manual button |
 | 11 | **Landing Page** | ⬜ Not Started | Three.js hero, signup confirm modal |
 | 12 | **Terms & Conditions Page** | ⬜ Not Started | |
 | 13 | **Polish & Responsiveness Pass** | ⬜ Not Started | |
@@ -52,7 +52,7 @@
 
 > Update this section whenever you start working on a new milestone.
 
-**Current Milestone:** `09 — Step 5 — Review & Submit`
+**Current Milestone:** `11 — Landing Page`
 
 **Status:** ⬜ Not Started
 
@@ -78,10 +78,12 @@
 - [x] Name step implemented (RHF + Zod, inline error, trimmed save)
 - [x] Age step implemented (month/day/year selects, live age display, 18+ enforcement with inline error)
 - [x] Pronouns step implemented (custom combobox, auto-fill on select, custom input)
+- [x] Review step implemented (T&C block + full-terms link, acceptance checkbox, submit with loading/error toast/retry, navigates to /success)
+- [x] Success & redirect implemented (animated confirmation, username greeting, auto-redirect to /home + manual button)
 
 ### Next
 
-> Build Step 5 — Review & Submit: T&C text + "View full terms" link, required acceptance checkbox, Signup with loading + error toast/retry, Back.
+> Build the Landing Page (and profile page) following `context/home-page.md` and `context/profile-page.md`.
 
 ---
 
@@ -179,36 +181,30 @@
 
 ## 09 — Step 5 — Review & Submit
 
-- [ ] T&C text implemented
-- [ ] T&C checkbox implemented
-- [ ] Checkbox validation implemented
-- [ ] Submit loading state implemented
-- [ ] Submit action implemented
-- [ ] No data recap shown
-- [ ] Back navigation verified
+- [x] T&C text implemented
+- [x] T&C checkbox implemented
+- [x] Checkbox validation implemented
+- [x] Submit loading state implemented
+- [x] Submit action implemented
+- [x] No data recap shown
+- [x] Back navigation verified
 
 ---
 
 ## 10 — Success & Redirect
 
-- [ ] Success state implemented
-- [ ] Success animation implemented
-- [ ] Redirect behavior implemented
-- [ ] Redirect destination verified
-- [ ] Refresh behavior verified
+- [x] Success state implemented
+- [x] Success animation implemented
+- [x] Redirect behavior implemented
+- [x] Redirect destination verified
+- [x] Refresh behavior verified
 
 ---
 
-## 11 — Landing Page
+## 11 — Landing Page and profile page
 
-- [ ] Landing page structure implemented
-- [ ] Hero section implemented
-- [ ] Three.js hero implemented
-- [ ] Signup CTA implemented
-- [ ] Signup confirmation modal implemented
-- [ ] Modal interactions verified
-- [ ] Navigation verified
-- [ ] Responsive layout verified
+ - follow the context\home-page.md file to design it
+  - follow the context\profile-page.md to design the page
 
 ---
 
@@ -346,6 +342,18 @@
 - **Completed on:** 2026-08-18
 - **Notes:** Added reusable `Combobox` UI primitive (custom dropdown): text input with filterable listbox, click-to-select auto-fills the field, keyboard nav (arrows/enter/escape), outside-click + Escape to close, accessible roles (`combobox`/`listbox`/`option`, `aria-expanded`/`aria-activedescendant`), check mark on the selected option. `PronounsStep` uses it with 7 pronoun options plus free-text custom entry, RHF + zodResolver validation via `useController`, Continue disabled until non-empty, trims on save, Back preserved. PronounsStep tests added (5: render, select-from-list, custom type + save/advance, whitespace error, back). 59 tests passing; lint, typecheck, build all passing.
 
+### Milestone 09 — Step 5: Review & Submit
+
+- [x] Completed
+- **Completed on:** 2026-08-18
+- **Notes:** `ReviewStep` builds the whole signup payload and calls `submitSignup()`. T&C summary block with "View full terms →" link to `/terms`; acceptance `Checkbox` (RHF `onChange` mode + watch-gated `Sign up` button so it's disabled until checked); submit sets `SET_STATUS` submitting/success, navigates to `/success` on success, and on failure shows an error toast, resets status to idle, and keeps all data for retry (checkbox stays checked, button re-enabled). No data recap shown (per decision log). `SET_STATUS` now wired end-to-end. ReviewStep tests added (5: render, check-enables-submit, submit+navigate with payload assertion, failure toast+retry+data preserved, back). 64 tests passing; lint, typecheck, build all passing.
+
+### Milestone 10 — Success & Redirect
+
+- [x] Completed
+- **Completed on:** 2026-08-18
+- **Notes:** `SuccessPage` is a Framer Motion confirmation screen (spring check-circle animation, fade-up content, wrapped in `MotionConfig reducedMotion="user"`). Greets the user by username passed via router state from `ReviewStep` (`navigate("/success", { state: { username } })`). Auto-redirects to `/home` (replace) after `SUCCESS_REDIRECT_MS` (3s) with a visible live countdown ("Redirecting in 3s…", `aria-live="polite"`); a "Go to dashboard" button redirects immediately (also covers reduced-motion/no-JS-timer users). Timer effect cleans up on unmount so refresh is safe. SuccessPage tests added (4: render+username, auto-redirect via fake timers, countdown decrement, button redirect). 68 tests passing; lint, typecheck, build all passing.
+
 ---
 
 # 🧪 Verification Checklist
@@ -399,6 +407,8 @@ Use this before changing a milestone to `🟢 Complete`.
 | 2026-08-18 | 06 — Step 2 — Name | 🟢 Complete | NameStep (RHF validation, trimmed save, inline error); 49 tests passing |
 | 2026-08-18 | 07 — Step 3 — Age (DOB) | 🟢 Complete | AgeStep (month/day/year selects, live age, 18+ enforcement); Select primitive added; 54 tests passing |
 | 2026-08-18 | 08 — Step 4 — Pronouns | 🟢 Complete | PronounsStep (custom combobox dropdown, auto-fill, custom input); 59 tests passing |
+| 2026-08-18 | 09 — Step 5 — Review & Submit | 🟢 Complete | ReviewStep (T&C + acceptance checkbox, submitSignup with loading/error toast/retry, navigates to /success); 64 tests passing |
+| 2026-08-18 | 10 — Success & Redirect | 🟢 Complete | SuccessPage (Framer Motion confirmation, username greeting, 3s auto-redirect to /home + manual button); 68 tests passing |
 
 ---
 

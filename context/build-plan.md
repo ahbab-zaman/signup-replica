@@ -66,9 +66,8 @@ Build outward from the wizard's core mechanics: state + validation first, then s
 - Auto-redirect to `/home` mock dashboard after short delay
 
 ## Milestone 11 — Landing Page
-- Hero section with Three.js ambient background (lazy-loaded)
-- Signup CTA → confirm modal ("Create Account" / "Maybe Later")
-- Login link/button (stub only — not part of graded scope)
+ - follow the context\home-page.md file to desing it
+- follow the context\profile-page.md to design the page
 
 ## Milestone 12 — Terms & Conditions Page
 - Standalone `/terms` route, styled consistently with wizard

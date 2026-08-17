@@ -57,7 +57,9 @@ export function ReviewStep() {
         termsAccepted: values.termsAccepted,
       });
       dispatch({ type: "SET_STATUS", status: "success" });
-      navigate("/success");
+      navigate("/success", {
+        state: { username: state.fields.username },
+      });
     } catch {
       dispatch({ type: "SET_STATUS", status: "idle" });
       toast({

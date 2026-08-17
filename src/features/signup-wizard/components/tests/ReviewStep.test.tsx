@@ -118,7 +118,7 @@ describe("ReviewStep", () => {
 
   it("submits the collected data and navigates to /success", async () => {
     const user = userEvent.setup();
-    mockedSubmitSignup.mockResolvedValueOnce({ userId: 1 });
+    mockedSubmitSignup.mockResolvedValueOnce({ userId: "user_123" });
     renderStep();
 
     await user.click(

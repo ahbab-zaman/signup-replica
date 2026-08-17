@@ -11,3 +11,5 @@ export const USERNAME_CHECK_DEBOUNCE_MS = 500;
 export const NAME_MAX_LENGTH = 50;
 
 export const EMAIL_MAX_LENGTH = 254;
+
+export const SUCCESS_REDIRECT_MS = 3_000;
