@@ -11,6 +11,8 @@ type SignupPayload = {
   newsletter: boolean;
   username: string;
   name: string;
+  country: string;
+  state: string;
   dateOfBirth: string;
   pronouns: string;
   termsAccepted: boolean;

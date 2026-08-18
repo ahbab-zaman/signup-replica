@@ -12,6 +12,8 @@ const VALID_PAYLOAD = {
   newsletter: false,
   username: "cool_user",
   name: "Ada Lovelace",
+  country: "US",
+  state: "California",
   dateOfBirth: "2000-01-01",
   pronouns: "she/her",
   termsAccepted: true,

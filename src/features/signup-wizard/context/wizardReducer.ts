@@ -1,6 +1,6 @@
 import type { WizardFields, WizardStatus } from "../types";
 
-export const TOTAL_STEPS = 7;
+export const TOTAL_STEPS = 8;
 
 export type WizardState = {
   stepIndex: number;
@@ -35,6 +35,8 @@ export const initialWizardState: WizardState = {
     newsletter: false,
     username: "",
     name: "",
+    country: "",
+    state: "",
     dateOfBirth: "",
     pronouns: "",
     termsAccepted: false,

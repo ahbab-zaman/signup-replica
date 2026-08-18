@@ -4,6 +4,7 @@ import { Home, ImagePlus, Share2, Sparkles, MapPin, CheckCircle } from "lucide-r
 import { useNavigate } from "react-router-dom";
 import { mockProfile } from "@/data/mock-profile";
 import { ProfileBannerBackground } from "@/components/profile/ProfileBannerBackground";
+import { useSessionUser } from "@/hooks/useSessionUser";
 
 function getInitials(name: string): string {
   return name
@@ -17,11 +18,16 @@ function getInitials(name: string): string {
 export function ProfileBanner({ onShare }: { onShare?: () => void }) {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
-  const { name, username, age, pronouns, location, vipStatus } = mockProfile;
+  const sessionUser = useSessionUser();
+
+  // Use real session data for identity; fall back to mock for demo fields
+  const name = sessionUser?.name || mockProfile.name;
+  const username = sessionUser?.username || mockProfile.username;
+  const { age, pronouns, location, vipStatus } = mockProfile;
+
   const initials = getInitials(name);
-  const [avatarImage, setAvatarImage] = useState<string | null>(
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-  );
+  // No default image — show initials avatar until user uploads a photo
+  const [avatarImage, setAvatarImage] = useState<string | null>(null);
 
   const glyphMotion = {
     initial: reduceMotion ? undefined : { opacity: 0.4, scale: 1.06 },

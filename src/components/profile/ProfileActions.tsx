@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Settings, Edit3, Share2, X, Check, User, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { mockProfile } from "@/data/mock-profile";
+import { useSessionUser } from "@/hooks/useSessionUser";
 
 export function ProfileActions({
   onToast,
@@ -13,9 +14,10 @@ export function ProfileActions({
 }) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const sessionUser = useSessionUser();
 
-  // Form states initialized with mockProfile
-  const [name, setName] = useState(mockProfile.name);
+  // Form states — seed name from session if available, otherwise fall back to mock
+  const [name, setName] = useState(sessionUser?.name || mockProfile.name);
   const [bio, setBio] = useState(mockProfile.bio);
   const [pronouns, setPronouns] = useState(mockProfile.pronouns);
   const [location, setLocation] = useState(mockProfile.location);

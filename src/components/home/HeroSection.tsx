@@ -1,6 +1,12 @@
-import { motion, type Variants } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  type Variants,
+} from "framer-motion";
 import { ArrowRight, ChevronDown, PartyPopper } from "lucide-react";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useCallback } from "react";
 
 const HeroCanvas = lazy(() => import("@/components/home/HeroCanvas"));
 
@@ -20,18 +26,49 @@ const heroLine: Variants = {
   },
 };
 
+const springConfig = { stiffness: 60, damping: 20, mass: 0.8 };
+
 export function HeroSection() {
+  // Normalised mouse position  -0.5 → 0.5
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+
+  // Spring-smoothed values so blobs glide rather than snap
+  const smoothX = useSpring(rawX, springConfig);
+  const smoothY = useSpring(rawY, springConfig);
+
+  // Each blob sits at a different "depth" — different multipliers give parallax
+  const x1 = useTransform(smoothX, [-0.5, 0.5], [-70, 70]);
+  const y1 = useTransform(smoothY, [-0.5, 0.5], [-55, 55]);
+
+  const x2 = useTransform(smoothX, [-0.5, 0.5], [55, -55]);
+  const y2 = useTransform(smoothY, [-0.5, 0.5], [-45, 45]);
+
+  const x3 = useTransform(smoothX, [-0.5, 0.5], [-40, 40]);
+  const y3 = useTransform(smoothY, [-0.5, 0.5], [35, -35]);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      const { clientX, clientY, currentTarget } = e;
+      const { width, height } = currentTarget.getBoundingClientRect();
+      rawX.set(clientX / width - 0.5);
+      rawY.set(clientY / height - 0.5);
+    },
+    [rawX, rawY]
+  );
+
   return (
     <section
       id="hero"
       className="relative flex min-h-dvh flex-col overflow-hidden bg-background"
+      onMouseMove={handleMouseMove}
     >
+      {/* Blob 1 — accent colour, left side */}
       <motion.div
         aria-hidden="true"
         className="absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-accent/20 blur-3xl"
+        style={{ x: x1, y: y1 }}
         animate={{
-          x: [0, 60, -40, 0],
-          y: [0, -50, 40, 0],
           scale: [1, 1.2, 0.9, 1],
         }}
         transition={{
@@ -40,12 +77,13 @@ export function HeroSection() {
           ease: "easeInOut",
         }}
       />
+
+      {/* Blob 2 — hero-2 colour, right side */}
       <motion.div
         aria-hidden="true"
         className="absolute -right-32 top-1/2 h-[28rem] w-[28rem] rounded-full bg-grad-hero-2/15 blur-3xl"
+        style={{ x: x2, y: y2 }}
         animate={{
-          x: [0, -50, 40, 0],
-          y: [0, 60, -40, 0],
           scale: [1, 1.15, 0.95, 1],
         }}
         transition={{
@@ -54,12 +92,13 @@ export function HeroSection() {
           ease: "easeInOut",
         }}
       />
+
+      {/* Blob 3 — hero-3 colour, bottom-centre */}
       <motion.div
         aria-hidden="true"
         className="absolute bottom-16 left-1/3 h-72 w-72 rounded-full bg-grad-hero-3/10 blur-3xl"
+        style={{ x: x3, y: y3 }}
         animate={{
-          x: [0, 40, -60, 0],
-          y: [0, -40, 50, 0],
           scale: [1, 1.25, 0.85, 1],
         }}
         transition={{
@@ -69,7 +108,7 @@ export function HeroSection() {
         }}
       />
 
-      <div className="absolute inset-0" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <Suspense fallback={null}>
           <HeroCanvas />
         </Suspense>

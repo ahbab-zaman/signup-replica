@@ -28,6 +28,8 @@ const seededFields = {
   newsletter: true,
   username: "cool_user1",
   name: "Ada Lovelace",
+  country: "US",
+  state: "California",
   dateOfBirth: "2000-01-15",
   pronouns: "she/her",
   termsAccepted: false,
@@ -36,7 +38,7 @@ const seededFields = {
 function SeededWizardProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(wizardReducer, {
     ...initialWizardState,
-    stepIndex: 6,
+    stepIndex: 7,
     fields: seededFields,
   });
 
@@ -162,7 +164,7 @@ describe("ReviewStep", () => {
         name: /I agree to the Terms & Conditions/i,
       }),
     ).toBeChecked();
-    expect(screen.getByTestId("step-index")).toHaveTextContent("6");
+    expect(screen.getByTestId("step-index")).toHaveTextContent("7");
   });
 
   it("navigates back to the previous step", async () => {
@@ -171,6 +173,6 @@ describe("ReviewStep", () => {
 
     await user.click(screen.getByRole("button", { name: /Back/i }));
 
-    expect(screen.getByTestId("step-index")).toHaveTextContent("5");
+    expect(screen.getByTestId("step-index")).toHaveTextContent("6");
   });
 });

@@ -59,6 +59,8 @@ export function ReviewStep() {
         newsletter: state.fields.newsletter,
         username: state.fields.username,
         name: state.fields.name,
+        country: state.fields.country,
+        state: state.fields.state,
         dateOfBirth: state.fields.dateOfBirth,
         pronouns: state.fields.pronouns,
         termsAccepted: values.termsAccepted,

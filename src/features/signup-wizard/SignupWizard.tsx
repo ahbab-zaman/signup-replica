@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { AgeStep } from "./components/AgeStep";
 import { WizardChrome } from "./components/WizardChrome";
 import { EmailStep } from "./components/EmailStep";
+import { LocationStep } from "./components/LocationStep";
 import { NameStep } from "./components/NameStep";
 import { OtpStep } from "./components/OtpStep";
 import { PronounsStep } from "./components/PronounsStep";
@@ -14,13 +15,14 @@ import {
 } from "./components/wizardStyles";
 
 const STEP_COMPONENTS = [
-  EmailStep,
-  OtpStep,
-  UsernameStep,
-  NameStep,
-  AgeStep,
-  PronounsStep,
-  ReviewStep,
+  EmailStep,       // 0
+  OtpStep,         // 1
+  UsernameStep,    // 2
+  NameStep,        // 3
+  LocationStep,    // 4  ← new
+  AgeStep,         // 5
+  PronounsStep,    // 6
+  ReviewStep,      // 7
 ];
 
 const stepVariants = {
