@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronDown,
   Home,
@@ -23,9 +23,6 @@ const NAV_LINKS = [
   { label: "Contact", href: "#contact" },
 ];
 
-const BAR_DURATIONS = [0.6, 0.8, 0.5, 0.7];
-const BAR_DELAYS = [0.1, 0, 0.25, 0.05];
-
 function getInitials(name: string): string {
   return name
     .split(" ")
@@ -33,38 +30,6 @@ function getInitials(name: string): string {
     .join("")
     .slice(0, 2)
     .toUpperCase();
-}
-
-function EqualizerBars({ playing }: { playing: boolean }) {
-  const reduceMotion = useReducedMotion();
-
-  if (reduceMotion || !playing) {
-    return (
-      <span className="flex h-4 items-end gap-0.5" aria-hidden="true">
-        {BAR_DURATIONS.map((_, index) => (
-          <span key={index} className="h-2 w-0.5 rounded-full bg-icon-strong" />
-        ))}
-      </span>
-    );
-  }
-
-  return (
-    <span className="flex h-4 items-end gap-0.5" aria-hidden="true">
-      {BAR_DURATIONS.map((duration, index) => (
-        <motion.span
-          key={index}
-          className="w-0.5 origin-bottom rounded-full bg-icon-strong"
-          animate={{ scaleY: [0.3, 1, 0.3] }}
-          transition={{
-            duration,
-            delay: BAR_DELAYS[index],
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </span>
-  );
 }
 
 function UserMenu() {
@@ -203,7 +168,6 @@ function UserMenu() {
 
 export function HomeNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [soundOn, setSoundOn] = useState(false);
 
   return (
     <div className="fixed inset-x-4 top-4 z-30 sm:inset-x-6">
@@ -246,17 +210,6 @@ export function HomeNavbar() {
         </nav>
 
         <div className="flex items-center gap-1">
-          <button
-            type="button"
-            aria-pressed={soundOn}
-            aria-label={
-              soundOn ? "Mute background music" : "Play background music"
-            }
-            onClick={() => setSoundOn((on) => !on)}
-            className="flex h-11 w-11 items-center justify-center rounded-lg text-icon-strong transition-colors hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
-          >
-            <EqualizerBars playing={soundOn} />
-          </button>
           <UserMenu />
         </div>
       </div>
