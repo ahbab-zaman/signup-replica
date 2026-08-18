@@ -6,7 +6,7 @@ import {
   type Variants,
 } from "framer-motion";
 import { ArrowRight, ChevronDown, PartyPopper } from "lucide-react";
-import { Suspense, lazy, useCallback } from "react";
+import { Suspense, lazy, useCallback, useRef } from "react";
 
 const HeroCanvas = lazy(() => import("@/components/home/HeroCanvas"));
 
@@ -26,7 +26,7 @@ const heroLine: Variants = {
   },
 };
 
-const springConfig = { stiffness: 60, damping: 20, mass: 0.8 };
+const springConfig = { stiffness: 180, damping: 22, mass: 0.6 };
 
 export function HeroSection() {
   // Normalised mouse position  -0.5 → 0.5
@@ -47,12 +47,20 @@ export function HeroSection() {
   const x3 = useTransform(smoothX, [-0.5, 0.5], [-40, 40]);
   const y3 = useTransform(smoothY, [-0.5, 0.5], [35, -35]);
 
+  // Shared mouse ref — stable object identity, updated every mousemove,
+  // read by HeroCanvas's useFrame on every animation frame (no re-render needed)
+  const mouseRef = useRef({ x: 0, y: 0 });
+
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       const { clientX, clientY, currentTarget } = e;
       const { width, height } = currentTarget.getBoundingClientRect();
-      rawX.set(clientX / width - 0.5);
-      rawY.set(clientY / height - 0.5);
+      const nx = clientX / width - 0.5;
+      const ny = clientY / height - 0.5;
+      rawX.set(nx);
+      rawY.set(ny);
+      mouseRef.current.x = nx;
+      mouseRef.current.y = ny;
     },
     [rawX, rawY]
   );
@@ -110,7 +118,7 @@ export function HeroSection() {
 
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <Suspense fallback={null}>
-          <HeroCanvas />
+          <HeroCanvas mouseRef={mouseRef} />
         </Suspense>
       </div>
 

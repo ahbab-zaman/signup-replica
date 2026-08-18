@@ -1,7 +1,15 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useReducedMotion } from "framer-motion";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
+
+interface MousePos {
+  x: number; // -0.5 → 0.5
+  y: number; // -0.5 → 0.5
+}
+
+interface HeroCanvasProps {
+  mouseRef?: RefObject<MousePos>;
+}
 
 const PARTICLE_COUNT = 720;
 
@@ -19,9 +27,8 @@ const PARTICLE_COLORS = [
   readCssVar("--color-grad-hero-3", "#fbbf24"),
 ];
 
-function ParticleField() {
+function ParticleField({ mouseRef }: { mouseRef?: RefObject<MousePos> }) {
   const points = useRef<THREE.Points>(null);
-  const reduceMotion = useReducedMotion();
 
   const { positions, colors } = useMemo(() => {
     const array = new Float32Array(PARTICLE_COUNT * 3);
@@ -41,28 +48,27 @@ function ParticleField() {
     return { positions: array, colors: colorArray };
   }, []);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     const mesh = points.current;
     if (!mesh) return;
 
-    // Continuous rotation indefinitely
+    // Continuous rotation
     mesh.rotation.y += delta * 0.06;
     mesh.rotation.x += delta * 0.02;
 
     // Floating bobbing effect
-    const time = state.clock.getElapsedTime();
+    const time = _state.clock.getElapsedTime();
     const floatingY = Math.sin(time * 0.8) * 0.25;
 
-    mesh.position.x = THREE.MathUtils.lerp(
-      mesh.position.x,
-      state.pointer.x * 0.35,
-      0.03,
-    );
-    mesh.position.y = THREE.MathUtils.lerp(
-      mesh.position.y,
-      floatingY + state.pointer.y * 0.2,
-      0.03,
-    );
+    // Read latest mouse position directly from shared ref — no React re-render needed
+    const mx = mouseRef?.current?.x ?? 0;
+    const my = mouseRef?.current?.y ?? 0;
+
+    const targetX = mx * 3.5;          // world-space offset
+    const targetY = floatingY + my * -2.5; // invert Y so moving up pushes particles up
+
+    mesh.position.x = THREE.MathUtils.lerp(mesh.position.x, targetX, 0.12);
+    mesh.position.y = THREE.MathUtils.lerp(mesh.position.y, targetY, 0.12);
   });
 
   return (
@@ -84,7 +90,7 @@ function ParticleField() {
   );
 }
 
-export default function HeroCanvas() {
+export default function HeroCanvas({ mouseRef }: HeroCanvasProps) {
   return (
     <Canvas
       camera={{ position: [0, 0, 9], fov: 55 }}
@@ -96,7 +102,7 @@ export default function HeroCanvas() {
       }}
       aria-hidden="true"
     >
-      <ParticleField />
+      <ParticleField mouseRef={mouseRef} />
     </Canvas>
   );
 }
