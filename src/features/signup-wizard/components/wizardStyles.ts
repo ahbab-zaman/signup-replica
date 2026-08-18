@@ -5,7 +5,7 @@ export const wizardPageInnerClass =
   "mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-5 py-6 sm:px-8 md:px-10 lg:px-12";
 
 export const wizardHeaderClass =
-  "relative flex items-start justify-between pt-1 sm:pt-2";
+  "relative flex items-center justify-between pt-1 sm:pt-2";
 
 export const wizardLogoClass =
   "select-none font-serif text-[clamp(4rem,7vw,6.5rem)] font-black leading-none tracking-[-0.08em] text-white";
@@ -14,7 +14,7 @@ export const wizardLogoDotClass =
   "ml-0.5 inline-block align-top text-[0.42em] leading-none";
 
 export const wizardStatusClass =
-  "pt-5 text-[0.95rem] font-semibold uppercase tracking-[0.14em] text-white sm:pt-6 sm:text-[1.05rem]";
+  "text-[0.95rem] font-semibold uppercase tracking-[0.14em] text-white sm:text-[1.05rem]";
 
 export const wizardCenteredHeaderClass =
   "flex items-center justify-center pt-1 sm:pt-2";

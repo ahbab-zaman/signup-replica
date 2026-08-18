@@ -43,19 +43,16 @@ function ParticleField() {
 
   useFrame((state, delta) => {
     const mesh = points.current;
-    if (!mesh || reduceMotion) return;
+    if (!mesh) return;
 
-    mesh.rotation.y += delta * 0.02;
-    mesh.rotation.x = THREE.MathUtils.lerp(
-      mesh.rotation.x,
-      state.pointer.y * 0.12,
-      0.05,
-    );
-    mesh.rotation.z = THREE.MathUtils.lerp(
-      mesh.rotation.z,
-      state.pointer.x * 0.08,
-      0.05,
-    );
+    // Continuous rotation indefinitely
+    mesh.rotation.y += delta * 0.06;
+    mesh.rotation.x += delta * 0.02;
+
+    // Floating bobbing effect
+    const time = state.clock.getElapsedTime();
+    const floatingY = Math.sin(time * 0.8) * 0.25;
+
     mesh.position.x = THREE.MathUtils.lerp(
       mesh.position.x,
       state.pointer.x * 0.35,
@@ -63,7 +60,7 @@ function ParticleField() {
     );
     mesh.position.y = THREE.MathUtils.lerp(
       mesh.position.y,
-      state.pointer.y * 0.2,
+      floatingY + state.pointer.y * 0.2,
       0.03,
     );
   });

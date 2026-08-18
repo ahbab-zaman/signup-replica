@@ -26,17 +26,47 @@ export function HeroSection() {
       id="hero"
       className="relative flex min-h-dvh flex-col overflow-hidden bg-background"
     >
-      <div
+      <motion.div
         aria-hidden="true"
         className="absolute -left-40 top-1/4 h-96 w-96 rounded-full bg-accent/20 blur-3xl"
+        animate={{
+          x: [0, 60, -40, 0],
+          y: [0, -50, 40, 0],
+          scale: [1, 1.2, 0.9, 1],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
-      <div
+      <motion.div
         aria-hidden="true"
         className="absolute -right-32 top-1/2 h-[28rem] w-[28rem] rounded-full bg-grad-hero-2/15 blur-3xl"
+        animate={{
+          x: [0, -50, 40, 0],
+          y: [0, 60, -40, 0],
+          scale: [1, 1.15, 0.95, 1],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
-      <div
+      <motion.div
         aria-hidden="true"
         className="absolute bottom-16 left-1/3 h-72 w-72 rounded-full bg-grad-hero-3/10 blur-3xl"
+        animate={{
+          x: [0, 40, -60, 0],
+          y: [0, -40, 50, 0],
+          scale: [1, 1.25, 0.85, 1],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
 
       <div className="absolute inset-0" aria-hidden="true">

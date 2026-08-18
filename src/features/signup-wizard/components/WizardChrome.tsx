@@ -1,10 +1,9 @@
 import { type ReactNode } from "react";
+import { Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   wizardCenteredHeaderClass,
-  wizardCenteredLogoClass,
   wizardHeaderClass,
-  wizardLogoClass,
-  wizardLogoDotClass,
   wizardPageClass,
   wizardPageInnerClass,
   wizardStatusClass,
@@ -12,15 +11,21 @@ import {
 import { useWizard } from "../hooks/useWizard";
 
 function BrandMark({ centered = false }: { centered?: boolean }) {
-  const logoClass = centered ? wizardCenteredLogoClass : wizardLogoClass;
-
   return (
-    <span aria-label="Extroverts" className={logoClass}>
-      E
-      <span aria-hidden="true" className={wizardLogoDotClass}>
-        &#8226;
-      </span>
-    </span>
+    <Link
+      to="/"
+      aria-label="Extroverts home"
+      className={`group flex items-center justify-center rounded-xl bg-linear-to-br from-grad-hero-1 to-grad-dl-2 text-background shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-accent ${
+        centered ? "h-12 w-12 sm:h-14 sm:w-14" : "h-10 w-10 sm:h-11 sm:w-11"
+      }`}
+    >
+      <Zap
+        aria-hidden="true"
+        className={`fill-current text-background transition-transform duration-200 group-hover:scale-110 ${
+          centered ? "h-7 w-7" : "h-5 w-5 sm:h-6 sm:w-6"
+        }`}
+      />
+    </Link>
   );
 }
 
@@ -48,3 +53,4 @@ export function WizardChrome({ children }: { children: ReactNode }) {
     </div>
   );
 }
+

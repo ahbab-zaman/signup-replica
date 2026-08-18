@@ -19,11 +19,11 @@ export function SlidingTextButton({
         className,
       )}
     >
-      <span className="flex h-12 flex-col transition-transform duration-300 ease-out group-hover:-translate-y-1/2 group-hover:-skew-y-3">
-        <span className="flex h-12 items-center px-8 text-sm font-semibold uppercase tracking-widest">
+      <span className="flex flex-col transition-transform duration-300 ease-out group-hover:-translate-y-1/2">
+        <span className="flex h-12 shrink-0 items-center px-8 text-sm font-semibold uppercase tracking-widest">
           {label}
         </span>
-        <span className="flex h-12 items-center px-8 text-sm font-semibold uppercase tracking-widest">
+        <span className="flex h-12 shrink-0 items-center px-8 text-sm font-semibold uppercase tracking-widest">
           {label}
         </span>
       </span>

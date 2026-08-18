@@ -1,4 +1,4 @@
-import { useReducedMotion } from "framer-motion";
+import Marquee from "react-fast-marquee";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import {
   events,
@@ -16,10 +16,10 @@ function EventCard({ event, offset, ariaHidden = false }: EventCardProps) {
   return (
     <article
       aria-hidden={ariaHidden || undefined}
-      className="group w-[24rem] shrink-0 overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.04] backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
+      className="group w-[24rem] shrink-0  rounded-[1.25rem] border border-white/10 bg-white/4 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/6"
       style={{ transform: `translateY(${offset}px)` }}
     >
-      <div className="flex h-56 items-center justify-center bg-white/[0.03]">
+      <div className="flex h-56 items-center justify-center bg-white/3">
         <img
           src={event.image}
           alt={event.title}
@@ -60,38 +60,26 @@ function EventCard({ event, offset, ariaHidden = false }: EventCardProps) {
 }
 
 export function EventsMarquee() {
-  const reduceMotion = useReducedMotion();
-  const marqueeEvents = [...events, ...events];
-
   return (
     <section
       id="events"
-      className="hero-gradient-bg flex min-h-screen items-center overflow-hidden py-12"
+      className="hero-gradient-bg flex min-h-screen items-center py-16 md:py-20 overflow-hidden"
     >
-      <div className="w-full">
-        {reduceMotion ? (
-          <div className="flex gap-6 overflow-x-auto px-6 sm:px-10">
-            {events.map((event, index) => (
+      <div className="w-full overflow-hidden py-4">
+        <Marquee
+          autoFill
+          speed={60}
+          gradient={false}
+        >
+          {events.map((event, index) => (
+            <div key={event.id} className="pr-6 py-6">
               <EventCard
-                key={event.id}
                 event={event}
                 offset={marqueeOffsets[index % marqueeOffsets.length]}
               />
-            ))}
-          </div>
-        ) : (
-          <div className="group overflow-hidden py-10">
-            <div className="carousel-track gap-6 px-6 group-hover:carousel-track-paused">
-              {marqueeEvents.map((event, index) => (
-                <EventCard
-                  key={`${event.id}-${index}`}
-                  event={event}
-                  offset={marqueeOffsets[index % marqueeOffsets.length]}
-                />
-              ))}
             </div>
-          </div>
-        )}
+          ))}
+        </Marquee>
       </div>
     </section>
   );

@@ -50,12 +50,18 @@
   --color-overlay: rgba(0, 0, 0, 0.7);
 
   /* Gradient stops — compose with `bg-linear-to-*` + `from/via/to` utilities */
-  --color-grad-hero-1: #a78bfa; /* violet */
-  --color-grad-hero-2: #f472b6; /* pink */
-  --color-grad-hero-3: #fbbf24; /* amber */
-  --color-grad-dl-1: #9333ea; /* purple (download section) */
-  --color-grad-dl-2: #ec4899; /* pink */
-  --color-grad-dl-3: #dc2626; /* red */
+  --color-grad-hero-1: #a78bfa;
+  /* violet */
+  --color-grad-hero-2: #f472b6;
+  /* pink */
+  --color-grad-hero-3: #fbbf24;
+  /* amber */
+  --color-grad-dl-1: #9333ea;
+  /* purple (download section) */
+  --color-grad-dl-2: #ec4899;
+  /* pink */
+  --color-grad-dl-3: #dc2626;
+  /* red */
 
   /* Bento / landing extras */
   --color-bento-violet: #ddd6fe;
@@ -83,19 +89,19 @@
 @layer utilities {
   .hero-gradient-bg {
     background:
-      linear-gradient(
-        115deg,
+      linear-gradient(115deg,
         color-mix(in srgb, var(--color-grad-hero-1) 22%, transparent) 0%,
         color-mix(in srgb, var(--color-grad-hero-2) 12%, transparent) 40%,
-        transparent 72%
-      ),
+        transparent 72%),
       var(--color-background);
   }
 
   .carousel-track {
     display: flex;
     width: max-content;
-    animation: carousel-scroll 80s linear infinite;
+    gap: 1.5rem;
+    animation: carousel-scroll 40s linear infinite;
+    will-change: transform;
   }
 
   .carousel-track-paused {
@@ -111,10 +117,11 @@
 
 @keyframes carousel-scroll {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
+
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -179,5 +186,9 @@
     background: color-mix(in srgb, var(--color-accent) 40%, transparent);
     color: var(--color-text-primary);
   }
+}
+
+.rfm-marquee-container {
+  overflow-x: visible !important;
 }
 
